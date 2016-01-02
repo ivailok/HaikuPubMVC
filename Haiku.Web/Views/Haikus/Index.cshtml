@@ -1,0 +1,43 @@
+﻿@model Haiku.Web.ViewModels.HaikusListViewModel
+
+@{
+    ViewBag.Title = "Haikus";
+}
+
+<div class="haikus-view container-fluid">
+    <span class="select-form">
+        <span>
+            Sort by:
+            <select data-style="btn-primary">
+                @foreach (var opt in Model.SortOptions)
+                {
+                    <option>@Html.DisplayFor(modelItem => opt)</option>
+                }
+            </select>
+        </span>
+
+        <span>
+            Order by:
+            <select data-style="btn-primary">
+                @foreach (var opt in Model.OrderOptions)
+                {
+                    <option>@Html.DisplayFor(modelItem => opt)</option>
+                }
+            </select>
+        </span>
+    </span>
+
+    <div class="haikus-container">
+        @foreach (var haiku in Model.Haikus)
+        {
+            <div class="haiku-container-item">
+                @Html.DisplayFor(modelItem => haiku.Text)
+                @Html.DisplayFor(modelItem => haiku.Rating)
+                @Html.DisplayFor(modelItem => haiku.Author)
+                @Html.ActionLink("Details", "Details", "Haikus", new { id = haiku.Id }, null)
+                @Html.ActionLink("Edit", "Edit", "Haikus", new { id = haiku.Id }, null)
+                @Html.ActionLink("Delete", "Delete", "Haikus", new { id = haiku.Id }, null)
+            </div>
+        }
+    </div>
+</div>

@@ -1,0 +1,40 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.23107.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Haiku.Web", "Haiku.Web\Haiku.Web.csproj", "{B918E072-4DB5-4331-A2E9-914158AEB991}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Haiku.Data", "Haiku.Data\Haiku.Data.csproj", "{40495635-B008-4F21-BA45-1E81EEBA1364}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Haiku.DTO", "Haiku.DTO\Haiku.DTO.csproj", "{C26E3165-87A4-4DA1-8479-EC4B4A2184A7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Haiku.Services", "Haiku.Services\Haiku.Services.csproj", "{72D14832-CA17-4595-9938-5D819CE13EA2}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B918E072-4DB5-4331-A2E9-914158AEB991}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B918E072-4DB5-4331-A2E9-914158AEB991}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B918E072-4DB5-4331-A2E9-914158AEB991}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B918E072-4DB5-4331-A2E9-914158AEB991}.Release|Any CPU.Build.0 = Release|Any CPU
+		{40495635-B008-4F21-BA45-1E81EEBA1364}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{40495635-B008-4F21-BA45-1E81EEBA1364}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{40495635-B008-4F21-BA45-1E81EEBA1364}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{40495635-B008-4F21-BA45-1E81EEBA1364}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C26E3165-87A4-4DA1-8479-EC4B4A2184A7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C26E3165-87A4-4DA1-8479-EC4B4A2184A7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C26E3165-87A4-4DA1-8479-EC4B4A2184A7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C26E3165-87A4-4DA1-8479-EC4B4A2184A7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{72D14832-CA17-4595-9938-5D819CE13EA2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{72D14832-CA17-4595-9938-5D819CE13EA2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{72D14832-CA17-4595-9938-5D819CE13EA2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{72D14832-CA17-4595-9938-5D819CE13EA2}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

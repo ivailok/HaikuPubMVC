@@ -1,0 +1,171 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{40495635-B008-4F21-BA45-1E81EEBA1364}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Haiku.Data</RootNamespace>
+    <AssemblyName>Haiku.Data</AssemblyName>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="DbAsyncRepository.cs" />
+    <Compile Include="Entities\HaikuEntity.cs" />
+    <Compile Include="Entities\HaikuRating.cs" />
+    <Compile Include="Entities\Report.cs" />
+    <Compile Include="HaikuContext.cs" />
+    <Compile Include="IAsyncRepository.cs" />
+    <Compile Include="IDbContext.cs" />
+    <Compile Include="IUnitOfWork.cs" />
+    <Compile Include="Migrations\201511301914075_Initial.cs" />
+    <Compile Include="Migrations\201511301914075_Initial.Designer.cs">
+      <DependentUpon>201511301914075_Initial.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201512030716011_Added_Haiku_Published_Date.cs" />
+    <Compile Include="Migrations\201512030716011_Added_Haiku_Published_Date.Designer.cs">
+      <DependentUpon>201512030716011_Added_Haiku_Published_Date.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201512030718052_IX_User_Nickname.cs" />
+    <Compile Include="Migrations\201512030718052_IX_User_Nickname.Designer.cs">
+      <DependentUpon>201512030718052_IX_User_Nickname.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201512061549087_AddedRatingToHaikuEntity.cs" />
+    <Compile Include="Migrations\201512061549087_AddedRatingToHaikuEntity.Designer.cs">
+      <DependentUpon>201512061549087_AddedRatingToHaikuEntity.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201512061618244_AddedRatingsTable.cs" />
+    <Compile Include="Migrations\201512061618244_AddedRatingsTable.Designer.cs">
+      <DependentUpon>201512061618244_AddedRatingsTable.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201512061631433_Configuring_Table_Relationships.cs" />
+    <Compile Include="Migrations\201512061631433_Configuring_Table_Relationships.Designer.cs">
+      <DependentUpon>201512061631433_Configuring_Table_Relationships.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201512061651427_Added_Rating_To_Users_Table.cs" />
+    <Compile Include="Migrations\201512061651427_Added_Rating_To_Users_Table.Designer.cs">
+      <DependentUpon>201512061651427_Added_Rating_To_Users_Table.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201512071131281_Created_Reports_Table.cs" />
+    <Compile Include="Migrations\201512071131281_Created_Reports_Table.Designer.cs">
+      <DependentUpon>201512071131281_Created_Reports_Table.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201512071319084_Added_Haiku_Rating_Helper_Fields.cs" />
+    <Compile Include="Migrations\201512071319084_Added_Haiku_Rating_Helper_Fields.Designer.cs">
+      <DependentUpon>201512071319084_Added_Haiku_Rating_Helper_Fields.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201512071350046_Added_User_Rating_Helper_Fields.cs" />
+    <Compile Include="Migrations\201512071350046_Added_User_Rating_Helper_Fields.Designer.cs">
+      <DependentUpon>201512071350046_Added_User_Rating_Helper_Fields.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201512071957527_IX_User_AccessToken.cs" />
+    <Compile Include="Migrations\201512071957527_IX_User_AccessToken.Designer.cs">
+      <DependentUpon>201512071957527_IX_User_AccessToken.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201512120008248_Change_User_AccessToken_Length_To_512.cs" />
+    <Compile Include="Migrations\201512120008248_Change_User_AccessToken_Length_To_512.Designer.cs">
+      <DependentUpon>201512120008248_Change_User_AccessToken_Length_To_512.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201512120025407_Change_User_AccessToken_Length_To_128.cs" />
+    <Compile Include="Migrations\201512120025407_Change_User_AccessToken_Length_To_128.Designer.cs">
+      <DependentUpon>201512120025407_Change_User_AccessToken_Length_To_128.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\Configuration.cs" />
+    <Compile Include="Entities\TEntity.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Entities\User.cs" />
+    <Compile Include="UnitOfWork.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Migrations\201511301914075_Initial.resx">
+      <DependentUpon>201511301914075_Initial.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201512030716011_Added_Haiku_Published_Date.resx">
+      <DependentUpon>201512030716011_Added_Haiku_Published_Date.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201512030718052_IX_User_Nickname.resx">
+      <DependentUpon>201512030718052_IX_User_Nickname.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201512061549087_AddedRatingToHaikuEntity.resx">
+      <DependentUpon>201512061549087_AddedRatingToHaikuEntity.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201512061618244_AddedRatingsTable.resx">
+      <DependentUpon>201512061618244_AddedRatingsTable.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201512061631433_Configuring_Table_Relationships.resx">
+      <DependentUpon>201512061631433_Configuring_Table_Relationships.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201512061651427_Added_Rating_To_Users_Table.resx">
+      <DependentUpon>201512061651427_Added_Rating_To_Users_Table.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201512071131281_Created_Reports_Table.resx">
+      <DependentUpon>201512071131281_Created_Reports_Table.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201512071319084_Added_Haiku_Rating_Helper_Fields.resx">
+      <DependentUpon>201512071319084_Added_Haiku_Rating_Helper_Fields.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201512071350046_Added_User_Rating_Helper_Fields.resx">
+      <DependentUpon>201512071350046_Added_User_Rating_Helper_Fields.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201512071957527_IX_User_AccessToken.resx">
+      <DependentUpon>201512071957527_IX_User_AccessToken.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201512120008248_Change_User_AccessToken_Length_To_512.resx">
+      <DependentUpon>201512120008248_Change_User_AccessToken_Length_To_512.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201512120025407_Change_User_AccessToken_Length_To_128.resx">
+      <DependentUpon>201512120025407_Change_User_AccessToken_Length_To_128.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
