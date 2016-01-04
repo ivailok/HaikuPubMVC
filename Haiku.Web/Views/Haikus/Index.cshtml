@@ -1,4 +1,6 @@
 ﻿@model Haiku.Web.ViewModels.HaikusListViewModel
+@using PagedList.Mvc;
+<link href="~/Content/PagedList.css" rel="stylesheet" type="text/css" />
 
 @{
     ViewBag.Title = "Haikus";
@@ -10,15 +12,18 @@
         <div class="form-group">
             @Html.LabelFor(model => model.QueryParams.SortBy, "Sort by:", htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.DropDownListFor(model => model.QueryParams.SortBy, Model.SortOptions)
+                @Html.DropDownList("SortBy", Model.SortOptions)
             </div>
         </div>
         <div class="form-group">
             @Html.LabelFor(model => model.QueryParams.Order, "Order:", htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.DropDownListFor(model => model.QueryParams.Order, Model.OrderOptions)
+                @Html.DropDownList("Order", Model.OrderOptions)
             </div>
         </div>
+
+        @Html.Hidden("Skip", 0)
+        @Html.Hidden("Take", 0)
 
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
@@ -32,12 +37,18 @@
     @foreach (var haiku in Model.Haikus)
     {
         <div class="haiku-container-item">
-            @Html.DisplayFor(modelItem => haiku.Text)
+            @Html.TextAreaFor(modelItem => haiku.Text,  htmlAttributes: new { @disabled = "disabled" })
             @Html.DisplayFor(modelItem => haiku.Rating)
             @Html.DisplayFor(modelItem => haiku.Author)
             @Html.ActionLink("Details", "Details", "Haikus", new { id = haiku.Id }, null)
             @Html.ActionLink("Edit", "Edit", "Haikus", new { id = haiku.Id }, null)
             @Html.ActionLink("Delete", "Delete", "Haikus", new { id = haiku.Id }, null)
         </div>
+
+        <br />
     }
 </div>
+
+Page @Model.Haikus.PageNumber of @Model.Haikus.PageCount
+@Html.PagedListPager(Model.Haikus, page => Url.Action("Index",
+    new { SortBy = Model.QueryParams.SortBy, Order = Model.QueryParams.Order, Skip = (page - 1) * Model.QueryParams.Take, Take = Model.QueryParams.Take }))

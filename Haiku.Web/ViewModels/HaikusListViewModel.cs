@@ -1,5 +1,6 @@
 ﻿using Haiku.DTO.Request;
 using Haiku.DTO.Response;
+using PagedList;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -40,7 +41,7 @@ namespace Haiku.Web.ViewModels
 
         public HaikusGetQueryParams QueryParams { get; set; }
 
-        public List<HaikuViewModel> Haikus { get; set; }
+        public IPagedList<HaikuViewModel> Haikus { get; set; }
 
         public IEnumerable<SelectListItem> SortOptions { get; set; }
 

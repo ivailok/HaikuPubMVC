@@ -2,6 +2,7 @@
 using Haiku.Services;
 using Haiku.Web.Filters;
 using Haiku.Web.ViewModels;
+using PagedList;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,13 +24,22 @@ namespace Haiku.Web.Controllers
         public async Task<ActionResult> Index(HaikusGetQueryParams queryParams)
         {
             HaikusListViewModel model = new HaikusListViewModel();
-            model.Haikus = (await this.haikusService.GetHaikusAsync(queryParams).ConfigureAwait(false)).Select(i => new HaikuViewModel()
+            var haikus = (await this.haikusService.GetHaikusAsync(queryParams).ConfigureAwait(false)).Select(i => new HaikuViewModel()
             {
                 Id = i.Id,
                 Text = i.Text,
                 Author = i.Author,
                 Rating = i.Rating
             }).ToList();
+            var pageData = this.haikusService.GetHaikusPagingMetadata();
+            model.Haikus = new StaticPagedList<HaikuViewModel>(haikus, queryParams.Skip / queryParams.Take + 1, queryParams.Take, pageData.TotalCount);
+            model.QueryParams = new HaikusGetQueryParams()
+            {
+                SortBy = queryParams.SortBy,
+                Order = queryParams.Order,
+                Skip = queryParams.Skip,
+                Take = queryParams.Take
+            };
             return View(model);
         }
 
