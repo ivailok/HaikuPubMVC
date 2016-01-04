@@ -9,7 +9,7 @@ using System.Web.Mvc;
 
 namespace Haiku.Web.ViewModels
 {
-    public class HaikusListViewModel
+    public class HaikusListViewModel : NotificationViewModel
     {
         public HaikusListViewModel()
         {
@@ -41,7 +41,7 @@ namespace Haiku.Web.ViewModels
 
         public HaikusGetQueryParams QueryParams { get; set; }
 
-        public IPagedList<HaikuViewModel> Haikus { get; set; }
+        public IPagedList<HaikuListItem> Haikus { get; set; }
 
         public IEnumerable<SelectListItem> SortOptions { get; set; }
 

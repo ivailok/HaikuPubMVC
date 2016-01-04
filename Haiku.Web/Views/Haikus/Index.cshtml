@@ -6,6 +6,15 @@
     ViewBag.Title = "Haikus";
 }
 
+<br />
+
+@if (!string.IsNullOrEmpty(Model.Notification))
+{
+    @Html.TextBoxFor(model => model.Notification, htmlAttributes: new { @class = "text-danger" })
+    
+    <br />
+}
+
 @using (Html.BeginForm("Index", "Haikus", FormMethod.Get))
 {
     <div class="form-horizontal">

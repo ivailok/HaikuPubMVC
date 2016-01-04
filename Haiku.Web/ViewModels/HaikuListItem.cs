@@ -5,7 +5,7 @@ using System.Web;
 
 namespace Haiku.Web.ViewModels
 {
-    public class HaikuViewModel
+    public class HaikuListItem
     {
         public int Id { get; set; }
 
