@@ -23,6 +23,19 @@ namespace Haiku.Services
             this.haikusService = haikusService;
         }
 
+        public async Task<string> GetCurrentUser(string publishCode)
+        {
+            var user = await this.unitOfWork.UsersRepository
+                .GetUniqueAsync(u => u.AccessToken == publishCode).ConfigureAwait(false);
+
+            if (user == null)
+            {
+                throw new NotFoundException(string.Format("Author not found."));
+            }
+
+            return user.Nickname;
+        }
+
         private async Task<User> FindUserByNicknameAsync(string nickname)
         {
             var user = await this.unitOfWork.UsersRepository

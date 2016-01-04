@@ -20,6 +20,12 @@ namespace Haiku.Services
             this.unitOfWork = unitOfWork;
         }
         
+        public async Task<string> GetHaikuAuthorAsync(int haikuId)
+        {
+            var haiku = await this.unitOfWork.HaikusRepository.GetByIdAsync(haikuId).ConfigureAwait(false);
+            return haiku.User.Nickname;
+        }
+
         public async Task DeleteHaikuAsync(int haikuId)
         {
             await DeleteHaikuNFAsync(haikuId).ConfigureAwait(false);

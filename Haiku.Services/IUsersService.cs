@@ -10,6 +10,8 @@ namespace Haiku.Services
 {
     public interface IUsersService
     {
+        Task<string> GetCurrentUser(string publishCode);
+
         Task<bool> ConfirmAuthorIdentityAsync(string nickname, string publishCode);
 
         Task<bool> ConfirmAdministratorIdentityAsync(string manageToken);

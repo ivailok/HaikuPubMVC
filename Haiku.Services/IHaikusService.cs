@@ -11,6 +11,8 @@ namespace Haiku.Services
 {
     public interface IHaikusService
     {
+        Task<string> GetHaikuAuthorAsync(int haikuId);
+
         Task DeleteHaikuAsync(int haikuId);
 
         Task DeleteHaikuNFAsync(int haikuId);

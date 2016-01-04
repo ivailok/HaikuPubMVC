@@ -129,7 +129,6 @@
     <Compile Include="App_Start\DependencyConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
-    <Compile Include="Controllers\AuthorizationController.cs" />
     <Compile Include="Controllers\HaikusController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\PublishController.cs" />
@@ -183,7 +182,6 @@
     <Content Include="Views\Haikus\Index.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Haikus\Details.cshtml" />
-    <Content Include="Views\Authorization\Index.cshtml" />
     <Content Include="Views\Register\Index.cshtml" />
     <Content Include="Views\Publish\Index.cshtml" />
   </ItemGroup>

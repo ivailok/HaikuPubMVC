@@ -64,8 +64,7 @@ namespace Haiku.Web.Controllers
         {
             throw new NotImplementedException();
         }
-
-        [Author]
+        
         public async Task<ActionResult> Delete(int id)
         {
             await this.haikusService.DeleteHaikuAsync(id).ConfigureAwait(false);
