@@ -114,9 +114,13 @@ namespace Haiku.Services
 
         public async Task<IEnumerable<UserGetDto>> GetUsersAsync(UsersGetQueryParams queryParams)
         {
+            var searchQuery = string.IsNullOrEmpty(queryParams.SearchNickname) ? 
+                this.unitOfWork.UsersRepository.Query() : 
+                this.unitOfWork.UsersRepository.Query().Where(u => u.Nickname.Contains(queryParams.SearchNickname));
+
             // exclude administrators
             // show vip users first
-            var preQuery = this.unitOfWork.UsersRepository.Query()
+            var preQuery = searchQuery
                 .Where(u => u.Role != UserRole.Admin).OrderByDescending(u => u.Role);
 
             IOrderedQueryable<User> sortQuery;

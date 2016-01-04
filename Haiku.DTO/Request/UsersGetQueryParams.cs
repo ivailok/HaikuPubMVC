@@ -16,5 +16,7 @@ namespace Haiku.DTO.Request
         public UsersSortBy SortBy { get; set; }
 
         public OrderType Order { get; set; }
+
+        public string SearchNickname { get; set; }
     }
 }

@@ -23,7 +23,7 @@ namespace Haiku.Services
         PagingMetadata GetUsersPagingMetadata();
         
         Task<IEnumerable<UserGetDto>> GetUsersAsync(UsersGetQueryParams queryParams);
-
+        
         Task<UserGetDto> GetUserAsync(string nickname);
 
         Task DeleteHaikusAsync(string nickname);
