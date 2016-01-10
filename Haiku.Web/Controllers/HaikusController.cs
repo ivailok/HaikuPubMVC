@@ -25,8 +25,13 @@ namespace Haiku.Web.Controllers
             this.usersService = usersService;
         }
 
-        public async Task<ActionResult> Index(HaikusGetQueryParams queryParams, string notification)
+        public async Task<ActionResult> Index(HaikusGetQueryParams queryParams)
         {
+            if (queryParams.Take == 0)
+            {
+                queryParams.Take = 20;
+            }
+
             HaikusListViewModel model = new HaikusListViewModel();
             var haikus = (await this.haikusService.GetHaikusAsync(queryParams).ConfigureAwait(false)).Select(i => new HaikuListItem()
             {

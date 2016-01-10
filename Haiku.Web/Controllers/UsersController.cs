@@ -1,6 +1,7 @@
 ﻿using Haiku.DTO.Exceptions;
 using Haiku.DTO.Request;
 using Haiku.Services;
+using Haiku.Web.Filters;
 using Haiku.Web.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -95,6 +96,7 @@ namespace Haiku.Web.Controllers
             return View(model);
         }
         
+        [Author]
         public async Task<ActionResult> Logout()
         {
             await this.usersService.LogoutAsync(LoggedUserNickname).ConfigureAwait(false);

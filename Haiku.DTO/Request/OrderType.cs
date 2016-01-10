@@ -7,7 +7,7 @@ namespace Haiku.DTO.Request
 {
     public enum OrderType
     {
+        Descending,
         Ascending,
-        Descending
     }
 }

@@ -4,16 +4,19 @@
 
 @{
     ViewBag.Title = "Haikus";
+
+    Haiku.DTO.SessionDto session = null;
+    try
+    {
+        session = (Haiku.DTO.SessionDto)Session[Haiku.Services.SessionsService.SessionTokenLabelConst];
+    }
+    catch
+    {
+
+    }
 }
 
 <br />
-
-@if (!string.IsNullOrEmpty(Model.Notification))
-{
-    @Html.TextBoxFor(model => model.Notification, htmlAttributes: new { @class = "text-danger" })
-    
-    <br />
-}
 
 @using (Html.BeginForm("Index", "Haikus", FormMethod.Get))
 {
@@ -32,7 +35,7 @@
         </div>
 
         @Html.Hidden("Skip", 0)
-        @Html.Hidden("Take", 0)
+        @Html.Hidden("Take", 20)
 
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
@@ -50,8 +53,13 @@
             @Html.DisplayFor(modelItem => haiku.Rating)
             @Html.DisplayFor(modelItem => haiku.Author)
             @Html.ActionLink("Details", "Details", "Haikus", new { id = haiku.Id }, null)
-            @Html.ActionLink("Edit", "Edit", "Haikus", new { id = haiku.Id }, null)
-            @Html.ActionLink("Delete", "Delete", "Haikus", new { id = haiku.Id }, null)
+           
+            @if (session != null && haiku.Author == session.Nickname)
+            {
+                @Html.ActionLink("Edit", "Edit", "Haikus", new { id = haiku.Id }, null)
+
+                @Html.ActionLink("Delete", "Delete", "Haikus", new { id = haiku.Id }, null)
+            }
         </div>
 
         <br />
