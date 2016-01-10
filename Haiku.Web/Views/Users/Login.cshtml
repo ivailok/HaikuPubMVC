@@ -11,7 +11,7 @@
 
 <br />
 
-@using (Html.BeginForm("Login", "Users", FormMethod.Post, new { id = "authentication-form" })) 
+@using (Html.BeginForm("Login", "Users", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { id = "authentication-form" })) 
 {
     @Html.AntiForgeryToken()
     

@@ -30,7 +30,7 @@ namespace Haiku.Web.Filters
                 {
                     { "Controller", "Users" },
                     { "Action", "Login" },
-                    { "returnUrl", filterContext.HttpContext.Request.RawUrl }
+                    { "ReturnUrl", filterContext.HttpContext.Request.RawUrl }
                 });
             }
         }

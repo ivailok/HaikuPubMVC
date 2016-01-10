@@ -59,15 +59,16 @@ namespace Haiku.Web.Controllers
             return View(model);
         }
         
-        public ActionResult Login()
+        public ActionResult Login(string returnUrl)
         {
+            ViewBag.ReturnUrl = returnUrl;
             LoginViewModel model = new LoginViewModel();
             return View(model);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Login(LoginViewModel model)
+        public async Task<ActionResult> Login(LoginViewModel model, string returnUrl)
         {
             if (ModelState.IsValid)
             {
@@ -81,7 +82,21 @@ namespace Haiku.Web.Controllers
 
                     Session[SessionsService.SessionTokenLabelConst] = session;
 
-                    return RedirectToAction("Publish", "Haikus");
+                    if (string.IsNullOrEmpty(returnUrl))
+                    {
+                        return RedirectToAction("Publish", "Haikus");
+                    }
+                    else
+                    {
+                        if (Url.IsLocalUrl(returnUrl))
+                        {
+                            return Redirect(returnUrl);
+                        }
+                        else
+                        {
+                            return RedirectToAction("Publish", "Haikus");
+                        }
+                    }
                 }
                 catch (NotFoundException e)
                 {
