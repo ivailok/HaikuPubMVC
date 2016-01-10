@@ -6,7 +6,7 @@ using System.Web;
 
 namespace Haiku.Web.ViewModels
 {
-    public class PublishViewModel : AuthorizationViewModel
+    public class PublishViewModel
     {
         [Required]
         [MinLength(10, ErrorMessage = "Minimum 10 symbols.")]

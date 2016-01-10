@@ -9,36 +9,26 @@ using Haiku.Data.Entities;
 using System.Threading;
 using Haiku.DTO.Response;
 using Haiku.DTO.Exceptions;
+using System.Linq.Expressions;
+using Haiku.DTO;
 
 namespace Haiku.Services
 {
-    public class UsersService : IUsersService
+    public class UsersService : BaseService, IUsersService
     {
-        private readonly IUnitOfWork unitOfWork;
-        private readonly IHaikusService haikusService;
+        private readonly IHaikusService HaikusService;
+        private readonly ISessionsService SessionsService;
 
-        public UsersService(IUnitOfWork unitOfWork, IHaikusService haikusService)
+        public UsersService(IUnitOfWork unitOfWork, IHaikusService haikusService, ISessionsService sessionsService)
+            : base(unitOfWork)
         {
-            this.unitOfWork = unitOfWork;
-            this.haikusService = haikusService;
-        }
-
-        public async Task<string> GetCurrentUser(string publishCode)
-        {
-            var user = await this.unitOfWork.UsersRepository
-                .GetUniqueAsync(u => u.AccessToken == publishCode).ConfigureAwait(false);
-
-            if (user == null)
-            {
-                throw new NotFoundException(string.Format("Author not found."));
-            }
-
-            return user.Nickname;
+            this.HaikusService = haikusService;
+            this.SessionsService = sessionsService;
         }
 
         private async Task<User> FindUserByNicknameAsync(string nickname)
         {
-            var user = await this.unitOfWork.UsersRepository
+            var user = await this.UnitOfWork.UsersRepository
                 .GetUniqueAsync(u => u.Nickname == nickname).ConfigureAwait(false);
 
             if (user == null)
@@ -49,46 +39,42 @@ namespace Haiku.Services
             return user;
         }
 
-        public async Task<bool> ConfirmAuthorIdentityAsync(string nickname, string publishCode)
+        private async Task<bool> CheckIfExists(Expression<Func<User, bool>> expr)
         {
-            var user = await FindUserByNicknameAsync(nickname).ConfigureAwait(false);
-            if (user.AccessToken == publishCode)
-            {
-                return true;
-            }
-            else
+            var user = await this.UnitOfWork.UsersRepository.GetUniqueAsync(expr);
+            if (user == null)
             {
                 return false;
             }
+            return true;
         }
 
-        public async Task<bool> ConfirmAdministratorIdentityAsync(string manageToken)
+        public async Task<SessionDto> RegisterAuthorAsync(AuthorRegisteringDto dto)
         {
-            var user = await this.unitOfWork.UsersRepository.GetUniqueAsync(
-                u => u.AccessToken == manageToken).ConfigureAwait(false);
-
-            if (user != null && user.Role == UserRole.Admin)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-        }
-
-        public async Task RegisterAuthorAsync(AuthorRegisteringDto dto)
-        {
-            var existingUser = await this.unitOfWork.UsersRepository
-                .GetUniqueAsync(u => u.Nickname == dto.Nickname).ConfigureAwait(false);
-            if (existingUser != null)
+            var existingUser = await this.CheckIfExists(u => u.Nickname == dto.Nickname).ConfigureAwait(false);
+            if (existingUser)
             {
                 throw new DuplicateUserNicknameException("Nickname is already taken.");
             }
 
-            User user = Mapper.MapAuthorRegisterDtoToUser(dto);
-            this.unitOfWork.UsersRepository.Add(user);
-            await this.unitOfWork.CommitAsync().ConfigureAwait(false);
+            string salt = await HashingService.GetSaltAsync().ConfigureAwait(false);
+            string pass = await HashingService.GetHashAsync(dto.Password, salt, HashingType.Strong).ConfigureAwait(false);
+
+            User user = new User()
+            {
+                Nickname = dto.Nickname,
+                Password = pass,
+                Salt = salt,
+                HaikusRatingSum = 0.0,
+                HaikusCount = 0
+            };
+            this.UnitOfWork.UsersRepository.Add(user);
+
+            var token = await this.SessionsService.AddNewSessionAsync(user.Nickname, user.Salt).ConfigureAwait(false);
+
+            await this.UnitOfWork.CommitAsync().ConfigureAwait(false);
+
+            return token;
         }
 
         public async Task<HaikuPublishedDto> PublishHaikuAsync(string nickname, HaikuPublishingDto dto)
@@ -98,8 +84,8 @@ namespace Haiku.Services
             var haiku = Mapper.MapHaikuPublishingDtoToHaikuEntity(dto);
             haiku.User = user;
 
-            var addedHaiku = this.unitOfWork.HaikusRepository.Add(haiku);
-            await this.unitOfWork.CommitAsync().ConfigureAwait(false);
+            var addedHaiku = this.UnitOfWork.HaikusRepository.Add(haiku);
+            await this.UnitOfWork.CommitAsync().ConfigureAwait(false);
 
             var published = Mapper.MapHaikuEntityToHaikuPublishedDto(addedHaiku);
             return published;
@@ -108,48 +94,43 @@ namespace Haiku.Services
         public PagingMetadata GetUsersPagingMetadata()
         {
             PagingMetadata metadata = new PagingMetadata();
-            metadata.TotalCount = this.unitOfWork.UsersRepository.Query().Count();
+            metadata.TotalCount = this.UnitOfWork.UsersRepository.Query().Count();
             return metadata;
         }
 
         public async Task<IEnumerable<UserGetDto>> GetUsersAsync(UsersGetQueryParams queryParams)
         {
-            var searchQuery = string.IsNullOrEmpty(queryParams.SearchNickname) ? 
-                this.unitOfWork.UsersRepository.Query() : 
-                this.unitOfWork.UsersRepository.Query().Where(u => u.Nickname.Contains(queryParams.SearchNickname));
-
-            // exclude administrators
-            // show vip users first
-            var preQuery = searchQuery
-                .Where(u => u.Role != UserRole.Admin).OrderByDescending(u => u.Role);
-
+            var preQuery = string.IsNullOrEmpty(queryParams.SearchNickname) ? 
+                this.UnitOfWork.UsersRepository.Query() : 
+                this.UnitOfWork.UsersRepository.Query().Where(u => u.Nickname.Contains(queryParams.SearchNickname));
+            
             IOrderedQueryable<User> sortQuery;
             if (queryParams.SortBy == UsersSortBy.Nickname)
             {
                 if (queryParams.Order == OrderType.Ascending)
                 {
-                    sortQuery = preQuery.ThenBy(u => u.Nickname);
+                    sortQuery = preQuery.OrderBy(u => u.Nickname);
                 }
                 else
                 {
-                    sortQuery = preQuery.ThenByDescending(u => u.Nickname);
+                    sortQuery = preQuery.OrderByDescending(u => u.Nickname);
                 }
             }
             else
             {
                 if (queryParams.Order == OrderType.Ascending)
                 {
-                    sortQuery = preQuery.ThenBy(u => u.Rating);
+                    sortQuery = preQuery.OrderBy(u => u.Rating);
                 }
                 else
                 {
-                    sortQuery = preQuery.ThenByDescending(u => u.Rating);
+                    sortQuery = preQuery.OrderByDescending(u => u.Rating);
                 }
             }
 
             var pagingQuery = sortQuery.Skip(queryParams.Skip).Take(queryParams.Take);
 
-            var data = await this.unitOfWork.UsersRepository.GetAllAsync(pagingQuery).ConfigureAwait(false);
+            var data = await this.UnitOfWork.UsersRepository.GetAllAsync(pagingQuery).ConfigureAwait(false);
             return data.Select(u => Mapper.MapUserToUserGetDto(u));
         }
 
@@ -165,12 +146,12 @@ namespace Haiku.Services
             var haikuIds = user.Haikus.Select(h => h.Id).ToList();
             foreach (var id in haikuIds)
             {
-                await this.haikusService.DeleteHaikuNFAsync(id).ConfigureAwait(false);
+                await this.HaikusService.DeleteHaikuNFAsync(id).ConfigureAwait(false);
             }
             user.Rating = null;
             user.HaikusRatingSum = 0.0;
             user.HaikusCount = 0;
-            await this.unitOfWork.CommitAsync().ConfigureAwait(false);
+            await this.UnitOfWork.CommitAsync().ConfigureAwait(false);
         }
 
         public async Task DeleteProfileAsync(string nickname)
@@ -179,17 +160,10 @@ namespace Haiku.Services
             var haikuIds = user.Haikus.Select(h => h.Id).ToList();
             foreach (var id in haikuIds)
             {
-                await this.haikusService.DeleteHaikuNFAsync(id).ConfigureAwait(false);
+                await this.HaikusService.DeleteHaikuNFAsync(id).ConfigureAwait(false);
             }
-            this.unitOfWork.UsersRepository.Delete(user);
-            await this.unitOfWork.CommitAsync().ConfigureAwait(false);
-        }
-
-        public async Task ChangeUserRoleAsync(string nickname, ChangeableUserRole role)
-        {
-            var user = await this.FindUserByNicknameAsync(nickname).ConfigureAwait(false);
-            user.Role = (UserRole) role;
-            await this.unitOfWork.CommitAsync().ConfigureAwait(false);
+            this.UnitOfWork.UsersRepository.Delete(user);
+            await this.UnitOfWork.CommitAsync().ConfigureAwait(false);
         }
     }
 }

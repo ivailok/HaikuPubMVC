@@ -40,13 +40,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BaseService.cs" />
     <Compile Include="HaikusService.cs" />
+    <Compile Include="HashingService.cs" />
     <Compile Include="IHaikusService.cs" />
     <Compile Include="IReportsService.cs" />
+    <Compile Include="ISessionsService.cs" />
     <Compile Include="IUsersService.cs" />
     <Compile Include="Mapper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ReportsService.cs" />
+    <Compile Include="SessionsService.cs" />
     <Compile Include="UsersService.cs" />
   </ItemGroup>
   <ItemGroup>

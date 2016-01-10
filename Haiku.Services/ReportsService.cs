@@ -10,18 +10,17 @@ using Haiku.DTO.Response;
 
 namespace Haiku.Services
 {
-    public class ReportsService : IReportsService
+    public class ReportsService : BaseService, IReportsService
     {
-        private IUnitOfWork unitOfWork;
 
         public ReportsService(IUnitOfWork unitOfWork)
+            : base(unitOfWork)
         {
-            this.unitOfWork = unitOfWork;
         }
 
         public async Task<IEnumerable<ReportGetDto>> GetReportsAsync(ReportsGetQueryParams queryParams)
         {
-            var preQuery = this.unitOfWork.ReportsRepository.Query();
+            var preQuery = this.UnitOfWork.ReportsRepository.Query();
 
             IOrderedQueryable<Report> sortQuery;
             if (queryParams.Order == OrderType.Ascending)
@@ -35,7 +34,7 @@ namespace Haiku.Services
 
             var pagingQuery = sortQuery.Skip(queryParams.Skip).Take(queryParams.Take);
 
-            IList<Report> reports = await this.unitOfWork.ReportsRepository.GetAllAsync(pagingQuery);
+            IList<Report> reports = await this.UnitOfWork.ReportsRepository.GetAllAsync(pagingQuery);
             return reports.Select(r => Mapper.MapReportToReportGetDto(r));
         }
     }

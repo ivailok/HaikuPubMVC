@@ -17,6 +17,8 @@ namespace Haiku.Data
 
         IAsyncRepository<HaikuRating> RatingsRepository { get; }
 
+        IAsyncRepository<Session> SessionsRepository { get; }
+
         Task CommitAsync();
     }
 }

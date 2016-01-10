@@ -11,36 +11,38 @@ using System.Web.Mvc;
 
 namespace Haiku.Web.Controllers
 {
-    public class RegisterController : Controller
+    public class UsersController : BaseController
     {
         private IUsersService usersService;
 
-        public RegisterController(IUsersService usersService)
+        public UsersController(IUsersService usersService)
         {
             this.usersService = usersService;
         }
 
         // GET: Register
-        public ActionResult Index()
+        public ActionResult Register()
         {
             RegisterViewModel model = new RegisterViewModel();
             return View(model);
         }
 
         [HttpPost]
-        public async Task<ActionResult> Index(RegisterViewModel model)
+        public async Task<ActionResult> Register(RegisterViewModel model)
         {
             if (ModelState.IsValid)
             {
                 try
                 {
-                    await this.usersService.RegisterAuthorAsync(new AuthorRegisteringDto()
+                    var token = await this.usersService.RegisterAuthorAsync(new AuthorRegisteringDto()
                     {
                         Nickname = model.Nickname,
-                        PublishCode = model.PublishCode
+                        Password = model.Password,
                     }).ConfigureAwait(false);
 
-                    return RedirectToAction("Index", "Publish");
+                    Session[SessionsService.SessionTokenLabelConst] = token;
+
+                    return RedirectToAction("Publish", "Haikus");
                 }
                 catch (DuplicateUserNicknameException e)
                 {
@@ -54,5 +56,10 @@ namespace Haiku.Web.Controllers
 
             return View(model);
         }
+
+        public ActionResult Login()
+        {
+            return View();
+        } 
     }
 }

@@ -11,56 +11,54 @@ using System.Linq.Expressions;
 
 namespace Haiku.Services
 {
-    public class HaikusService : IHaikusService
+    public class HaikusService : BaseService, IHaikusService
     {
-        private readonly IUnitOfWork unitOfWork;
-
         public HaikusService(IUnitOfWork unitOfWork)
+            : base(unitOfWork)
         {
-            this.unitOfWork = unitOfWork;
         }
         
         public async Task<string> GetHaikuAuthorAsync(int haikuId)
         {
-            var haiku = await this.unitOfWork.HaikusRepository.GetByIdAsync(haikuId).ConfigureAwait(false);
+            var haiku = await this.UnitOfWork.HaikusRepository.GetByIdAsync(haikuId).ConfigureAwait(false);
             return haiku.User.Nickname;
         }
 
         public async Task DeleteHaikuAsync(int haikuId)
         {
             await DeleteHaikuNFAsync(haikuId).ConfigureAwait(false);
-            await this.unitOfWork.CommitAsync().ConfigureAwait(false);
+            await this.UnitOfWork.CommitAsync().ConfigureAwait(false);
         }
 
         public async Task DeleteHaikuNFAsync(int haikuId)
         {
-            this.unitOfWork.ReportsRepository.DeleteMany(r => r.HaikuId == haikuId);
-            this.unitOfWork.RatingsRepository.DeleteMany(r => r.HaikuId == haikuId);
-            await this.unitOfWork.HaikusRepository.DeleteAsync(haikuId).ConfigureAwait(false);
+            this.UnitOfWork.ReportsRepository.DeleteMany(r => r.HaikuId == haikuId);
+            this.UnitOfWork.RatingsRepository.DeleteMany(r => r.HaikuId == haikuId);
+            await this.UnitOfWork.HaikusRepository.DeleteAsync(haikuId).ConfigureAwait(false);
         }
 
         public async Task ModifyHaikuAsync(int haikuId, HaikuModifyDto dto)
         {
-            var haiku = await this.unitOfWork.HaikusRepository.GetByIdAsync(haikuId).ConfigureAwait(false);
+            var haiku = await this.UnitOfWork.HaikusRepository.GetByIdAsync(haikuId).ConfigureAwait(false);
             if (haiku == null)
             {
                 throw new KeyNotFoundException("Haiku not found.");
             }
             haiku.Text = dto.Text;
-            this.unitOfWork.HaikusRepository.Update(haiku);
-            await this.unitOfWork.CommitAsync().ConfigureAwait(false);
+            this.UnitOfWork.HaikusRepository.Update(haiku);
+            await this.UnitOfWork.CommitAsync().ConfigureAwait(false);
         }
 
         public PagingMetadata GetHaikusPagingMetadata()
         {
             PagingMetadata metadata = new PagingMetadata();
-            metadata.TotalCount = this.unitOfWork.HaikusRepository.Query().Count();
+            metadata.TotalCount = this.UnitOfWork.HaikusRepository.Query().Count();
             return metadata;
         }
 
         public async Task<IEnumerable<HaikuGetDto>> GetHaikusAsync(HaikusGetQueryParams queryParams)
         {
-            var preQuery = this.unitOfWork.HaikusRepository.QueryInclude(h => h.User);
+            var preQuery = this.UnitOfWork.HaikusRepository.QueryInclude(h => h.User);
 
             IOrderedQueryable<HaikuEntity> sortQuery;
             if (queryParams.SortBy == HaikusSortBy.Date)
@@ -88,19 +86,19 @@ namespace Haiku.Services
 
             var pagingQuery = sortQuery.Skip(queryParams.Skip).Take(queryParams.Take);
 
-            var data = await this.unitOfWork.HaikusRepository.GetAllAsync(pagingQuery).ConfigureAwait(false);
+            var data = await this.UnitOfWork.HaikusRepository.GetAllAsync(pagingQuery).ConfigureAwait(false);
             return data.Select(h => Mapper.MapHaikuEntityToHaikuGetDto(h));
         }
 
         public async Task<HaikuGetDto> GetHaikuAsync(int haikuId)
         {
-            var haiku = await this.unitOfWork.HaikusRepository.GetByIdAsync(haikuId).ConfigureAwait(false);
+            var haiku = await this.UnitOfWork.HaikusRepository.GetByIdAsync(haikuId).ConfigureAwait(false);
             return Mapper.MapHaikuEntityToHaikuGetDto(haiku);
         }
 
         public async Task<HaikuRatedDto> RateAsync(int id, HaikuRatingDto dto)
         {
-            var haiku = await this.unitOfWork.HaikusRepository.GetByIdAsync(id).ConfigureAwait(false);
+            var haiku = await this.UnitOfWork.HaikusRepository.GetByIdAsync(id).ConfigureAwait(false);
             var rating = Mapper.MapHaikuRateDtoToHaikuRating(dto);
             haiku.Ratings.Add(rating);
 
@@ -111,7 +109,7 @@ namespace Haiku.Services
             haiku.Rating = ((double) haiku.RatingsSum) / haiku.RatingsCount;
 
             // updating user rating
-            var user = await this.unitOfWork.UsersRepository.GetByIdAsync(haiku.UserId);
+            var user = await this.UnitOfWork.UsersRepository.GetByIdAsync(haiku.UserId);
             if (oldHaikuRating == null)
             {
                 user.HaikusRatingSum += haiku.Rating.Value;
@@ -123,7 +121,7 @@ namespace Haiku.Services
             }
             user.Rating = user.HaikusRatingSum / user.HaikusCount;
 
-            await this.unitOfWork.CommitAsync().ConfigureAwait(false);
+            await this.UnitOfWork.CommitAsync().ConfigureAwait(false);
             return new HaikuRatedDto()
             {
                 HaikuRating = haiku.Rating.Value
@@ -132,10 +130,10 @@ namespace Haiku.Services
 
         public async Task SendReport(int id, HaikuReportingDto dto)
         {
-            var haiku = await this.unitOfWork.HaikusRepository.GetByIdAsync(id).ConfigureAwait(false);
+            var haiku = await this.UnitOfWork.HaikusRepository.GetByIdAsync(id).ConfigureAwait(false);
             var report = Mapper.MapHaikuReportingDtoToReport(dto);
             haiku.Reports.Add(report);
-            await this.unitOfWork.CommitAsync().ConfigureAwait(false);
+            await this.UnitOfWork.CommitAsync().ConfigureAwait(false);
         }
     }
 }

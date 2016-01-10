@@ -15,9 +15,6 @@ namespace Haiku.DTO.Response
         [DataMember(Name = "rating")]
         public double? Rating { get; set; }
 
-        [DataMember(Name = "vip", IsRequired = true)]
-        public bool Vip { get; set; }
-
         [DataMember(Name = "haikus")]
         public IEnumerable<HaikuGetDto> Haikus { get; set; } 
     }

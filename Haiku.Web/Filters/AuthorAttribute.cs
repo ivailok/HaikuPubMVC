@@ -1,4 +1,5 @@
-﻿using Haiku.Services;
+﻿using Haiku.DTO;
+using Haiku.Services;
 using Haiku.Web.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -10,67 +11,27 @@ using System.Web.Routing;
 
 namespace Haiku.Web.Filters
 {
-    public enum AuthorAuthorizationType
-    {
-        NewHaiku,
-        ManageMyHaiku,
-        ManageOtherHaiku
-    }
-
     // checking if the request is from the author
     public class AuthorAttribute : ActionFilterAttribute
     {
-        private const string PublishTokenHeader = "PublishCode";
-
-        private AuthorAuthorizationType type;
-
-        public AuthorAttribute(AuthorAuthorizationType type)
-        {
-            this.type = type;
-        }
-
         public override void OnActionExecuting(ActionExecutingContext filterContext)
         {
-            var usersService = DependencyResolver.Current.GetService<IUsersService>(); ;
-            var haikusService = DependencyResolver.Current.GetService<IHaikusService>();
-
-            bool author = false;
-            string nickname = string.Empty;
-
-            if (filterContext.ActionParameters.ContainsKey("model"))
+            var sessionsService = DependencyResolver.Current.GetService<ISessionsService>();
+            
+            try
             {
-                string token = (filterContext.ActionParameters["model"] as AuthorizationViewModel).PublishCode;
-                if (this.type == AuthorAuthorizationType.ManageMyHaiku)
-                {
-                    if (filterContext.ActionParameters.ContainsKey("haikuId"))
-                    {
-                        var haikuId = Convert.ToInt32(filterContext.ActionParameters["haikuId"]);
-                        nickname = haikusService.GetHaikuAuthorAsync(haikuId).Result;
-
-                        if (usersService.ConfirmAuthorIdentityAsync(nickname, token).Result)
-                        {
-                            author = true;
-                        }
-                    }
-                }
-                else if (this.type == AuthorAuthorizationType.NewHaiku)
-                {
-                    nickname = usersService.GetCurrentUser(token).Result;
-                    author = true;
-                }
-                
+                SessionDto session = (SessionDto)filterContext.HttpContext.Session[SessionsService.SessionTokenLabelConst];
+                SessionDto newSession = sessionsService.CheckAndUpdateSessionAsync(session).Result;
+                filterContext.HttpContext.Session[SessionsService.SessionTokenLabelConst] = newSession;
             }
-
-            if (!author)
+            catch
             {
-                filterContext.Controller.ViewData.ModelState.AddModelError("GeneralError", "Wrong credentials.");
-            }
-            else
-            {
-                if (!filterContext.Controller.TempData.ContainsKey("nickname"))
+                filterContext.Result = new RedirectToRouteResult(new RouteValueDictionary()
                 {
-                    filterContext.Controller.TempData.Add("nickname", nickname);
-                }
+                    { "Controller", "Users" },
+                    { "Action", "Login" },
+                    { "returnUrl", filterContext.HttpContext.Request.RawUrl }
+                });
             }
         }
     }

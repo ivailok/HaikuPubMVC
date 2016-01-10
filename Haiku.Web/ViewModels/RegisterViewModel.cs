@@ -15,10 +15,10 @@ namespace Haiku.Web.ViewModels
 
         [Required]
         [MinLength(4, ErrorMessage = "Minimum 4 symbols.")]
-        public string Password { get; set; }
+        public string OriginalPassword { get; set; }
 
         [Required]
         [StringLength(128, MinimumLength = 128)]
-        public string PublishCode { get; set; }
+        public string Password { get; set; }
     }
 }

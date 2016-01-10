@@ -22,6 +22,8 @@ namespace Haiku.Data
 
         public DbSet<HaikuRating> Ratings { get; set; }
 
+        public DbSet<Session> Sessions { get; set; }
+
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);

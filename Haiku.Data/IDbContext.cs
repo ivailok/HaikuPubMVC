@@ -16,6 +16,8 @@ namespace Haiku.Data
 
         DbSet<HaikuRating> Ratings { get; set; }
 
+        DbSet<Session> Sessions { get; set; }
+
         Task<int> SaveChangesAsync();
     }
 }

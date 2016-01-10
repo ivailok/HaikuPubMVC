@@ -1,7 +1,7 @@
 ﻿$(document).ready(function () {
     $('#authentication-form').on('submit', function () {
-        var hash = CryptoJS.SHA3($('#Password').val(), { outputLength: 512 });
-        $('#PublishCode').val(hash.toString());
+        var hash = CryptoJS.SHA3($('#OriginalPassword').val(), { outputLength: 512 });
+        $('#Password').val(hash.toString());
         //$('#Password').remove();
     });
 });

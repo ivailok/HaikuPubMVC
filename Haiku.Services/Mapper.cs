@@ -11,18 +11,6 @@ namespace Haiku.Services
 {
     public static class Mapper
     {
-        public static User MapAuthorRegisterDtoToUser(AuthorRegisteringDto dto)
-        {
-            return new User()
-            {
-                Nickname = dto.Nickname,
-                AccessToken = dto.PublishCode,
-                Role = UserRole.Author,
-                HaikusRatingSum = 0.0,
-                HaikusCount = 0
-            };
-        }
-
         public static HaikuEntity MapHaikuPublishingDtoToHaikuEntity(HaikuPublishingDto dto)
         {
             return new HaikuEntity()
@@ -69,7 +57,6 @@ namespace Haiku.Services
             {
                 Nickname = user.Nickname,
                 Rating = user.Rating,
-                Vip = user.Role == UserRole.VIP
             };
             var haikus = new List<HaikuGetDto>();
             foreach (var haiku in user.Haikus)

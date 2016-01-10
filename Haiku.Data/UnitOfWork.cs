@@ -14,6 +14,7 @@ namespace Haiku.Data
         private IAsyncRepository<HaikuEntity> haikusRepository;
         private IAsyncRepository<Report> reportsRepository;
         private IAsyncRepository<HaikuRating> ratingsRepository;
+        private IAsyncRepository<Session> sessionsRepository;
         private bool disposedValue = false;
 
         public UnitOfWork(
@@ -21,13 +22,15 @@ namespace Haiku.Data
             IAsyncRepository<User> usersRepository, 
             IAsyncRepository<HaikuEntity> haikusRepository,
             IAsyncRepository<Report> reportsRepository,
-            IAsyncRepository<HaikuRating> ratingsRepository)
+            IAsyncRepository<HaikuRating> ratingsRepository,
+            IAsyncRepository<Session> sessionsRepository)
         {
             this.context = context;
             this.usersRepository = usersRepository;
             this.haikusRepository = haikusRepository;
             this.reportsRepository = reportsRepository;
             this.ratingsRepository = ratingsRepository;
+            this.sessionsRepository = sessionsRepository;
         }
 
         public IAsyncRepository<User> UsersRepository
@@ -49,6 +52,11 @@ namespace Haiku.Data
         public IAsyncRepository<HaikuRating> RatingsRepository
         {
             get { return this.ratingsRepository; }
+        }
+
+        public IAsyncRepository<Session> SessionsRepository
+        {
+            get { return this.sessionsRepository; }
         }
 
         public Task CommitAsync()

@@ -12,7 +12,7 @@ namespace Haiku.DTO.Request
         [DataMember(Name = "nickname", IsRequired = true)]
         public string Nickname { get; set; }
         
-        [DataMember(Name = "publishCode", IsRequired = true)]
-        public string PublishCode { get; set; }
+        [DataMember(Name = "password", IsRequired = true)]
+        public string Password { get; set; }
     }
 }

@@ -137,10 +137,10 @@
     <Compile Include="App_Start\DependencyConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="Controllers\BaseController.cs" />
     <Compile Include="Controllers\HaikusController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
-    <Compile Include="Controllers\PublishController.cs" />
-    <Compile Include="Controllers\RegisterController.cs" />
+    <Compile Include="Controllers\UsersController.cs" />
     <Compile Include="Filters\AuthorAttribute.cs" />
     <Compile Include="Filters\HeaderExtractor.cs" />
     <Compile Include="Global.asax.cs">
@@ -151,9 +151,11 @@
     <Compile Include="ViewModels\HaikuEditViewModel.cs" />
     <Compile Include="ViewModels\HaikuListItem.cs" />
     <Compile Include="ViewModels\HaikusListViewModel.cs" />
+    <Compile Include="ViewModels\LoginViewModel.cs" />
     <Compile Include="ViewModels\NotificationViewModel.cs" />
     <Compile Include="ViewModels\PublishViewModel.cs" />
     <Compile Include="ViewModels\RegisterViewModel.cs" />
+    <Compile Include="ViewModels\LayoutViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap.css" />
@@ -193,9 +195,10 @@
     <Content Include="Views\Haikus\Index.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Haikus\Details.cshtml" />
-    <Content Include="Views\Register\Index.cshtml" />
-    <Content Include="Views\Publish\Index.cshtml" />
+    <Content Include="Views\Users\Register.cshtml" />
+    <Content Include="Views\Haikus\Publish.cshtml" />
     <Content Include="Views\Haikus\Edit.cshtml" />
+    <Content Include="Views\Users\Login.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

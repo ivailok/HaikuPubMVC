@@ -5,18 +5,13 @@ using System.Text;
 using System.Threading.Tasks;
 using Haiku.DTO.Request;
 using Haiku.DTO.Response;
+using Haiku.DTO;
 
 namespace Haiku.Services
 {
     public interface IUsersService
     {
-        Task<string> GetCurrentUser(string publishCode);
-
-        Task<bool> ConfirmAuthorIdentityAsync(string nickname, string publishCode);
-
-        Task<bool> ConfirmAdministratorIdentityAsync(string manageToken);
-
-        Task RegisterAuthorAsync(AuthorRegisteringDto dto);
+        Task<SessionDto> RegisterAuthorAsync(AuthorRegisteringDto dto);
         
         Task<HaikuPublishedDto> PublishHaikuAsync(string nickname, HaikuPublishingDto dto);
 
@@ -29,7 +24,5 @@ namespace Haiku.Services
         Task DeleteHaikusAsync(string nickname);
 
         Task DeleteProfileAsync(string nickname);
-
-        Task ChangeUserRoleAsync(string nickname, ChangeableUserRole role);
     }
 }

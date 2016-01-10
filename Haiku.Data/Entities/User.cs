@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Haiku.Data.Validation;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -8,13 +9,6 @@ using System.Threading.Tasks;
 
 namespace Haiku.Data.Entities
 {
-    public enum UserRole
-    {
-        Author,
-        VIP,
-        Admin
-    }
-
     [Table("Users")]
     public class User : TEntity<int>
     {
@@ -28,10 +22,12 @@ namespace Haiku.Data.Entities
         public string Nickname { get; set; }
 
         [Required]
-        [StringLength(128, MinimumLength = 128)]
-        public string AccessToken { get; set; }
+        [ExactStringLength(88, "Password")]
+        public string Password { get; set; }
 
-        public UserRole Role { get; set; }
+        [Required]
+        [ExactStringLength(24, "Salt")]
+        public string Salt { get; set; }
 
         public double? Rating { get; set; }
 

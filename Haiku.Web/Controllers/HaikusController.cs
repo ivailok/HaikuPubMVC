@@ -14,7 +14,7 @@ using System.Web.Routing;
 
 namespace Haiku.Web.Controllers
 {
-    public class HaikusController : Controller
+    public class HaikusController : BaseController
     {
         private IHaikusService haikusService;
         private IUsersService usersService;
@@ -47,6 +47,42 @@ namespace Haiku.Web.Controllers
             return View(model);
         }
 
+        public ActionResult Publish()
+        {
+            PublishViewModel model = new PublishViewModel();
+            return View(model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Author]
+        public async Task<ActionResult> Publish(PublishViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    await this.usersService.PublishHaikuAsync(LoggedUserNickname, new HaikuPublishingDto()
+                    {
+                        Text = model.Text
+                    }).ConfigureAwait(false);
+
+                    var routeParams = new RouteValueDictionary();
+                    routeParams.Add("Skip", 0);
+                    routeParams.Add("Take", 20);
+                    routeParams.Add("SortBy", "Date");
+                    routeParams.Add("Order", "Descending");
+                    return RedirectToAction("Index", "Haikus", routeParams);
+                }
+                catch (Exception e)
+                {
+                    ModelState.AddModelError("GeneralError", "We have a problem now. Try later.");
+                }
+            }
+
+            return View(model);
+        }
+
         public async Task<ActionResult> Details(int id)
         {
             var dto = await this.haikusService.GetHaikuAsync(id).ConfigureAwait(false);
@@ -72,7 +108,6 @@ namespace Haiku.Web.Controllers
         }
 
         [HttpPost]
-        [Author(AuthorAuthorizationType.ManageMyHaiku)]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Edit(int haikuId, HaikuEditViewModel model)
         {

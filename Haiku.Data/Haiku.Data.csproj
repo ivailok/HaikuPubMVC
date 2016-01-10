@@ -53,6 +53,7 @@
     <Compile Include="Entities\HaikuEntity.cs" />
     <Compile Include="Entities\HaikuRating.cs" />
     <Compile Include="Entities\Report.cs" />
+    <Compile Include="Entities\Session.cs" />
     <Compile Include="HaikuContext.cs" />
     <Compile Include="IAsyncRepository.cs" />
     <Compile Include="IDbContext.cs" />
@@ -109,11 +110,24 @@
     <Compile Include="Migrations\201512120025407_Change_User_AccessToken_Length_To_128.Designer.cs">
       <DependentUpon>201512120025407_Change_User_AccessToken_Length_To_128.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201601101021079_Added_Session.cs" />
+    <Compile Include="Migrations\201601101021079_Added_Session.Designer.cs">
+      <DependentUpon>201601101021079_Added_Session.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201601101232365_Added_Table_Sessions.cs" />
+    <Compile Include="Migrations\201601101232365_Added_Table_Sessions.Designer.cs">
+      <DependentUpon>201601101232365_Added_Table_Sessions.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201601101239430_Updated_Pass_Length.cs" />
+    <Compile Include="Migrations\201601101239430_Updated_Pass_Length.Designer.cs">
+      <DependentUpon>201601101239430_Updated_Pass_Length.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Entities\TEntity.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Entities\User.cs" />
     <Compile Include="UnitOfWork.cs" />
+    <Compile Include="Validation\ExactStringLength.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -158,6 +172,15 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201512120025407_Change_User_AccessToken_Length_To_128.resx">
       <DependentUpon>201512120025407_Change_User_AccessToken_Length_To_128.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201601101021079_Added_Session.resx">
+      <DependentUpon>201601101021079_Added_Session.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201601101232365_Added_Table_Sessions.resx">
+      <DependentUpon>201601101232365_Added_Table_Sessions.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201601101239430_Updated_Pass_Length.resx">
+      <DependentUpon>201601101239430_Updated_Pass_Length.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

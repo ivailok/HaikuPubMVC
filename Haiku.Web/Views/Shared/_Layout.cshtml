@@ -1,4 +1,16 @@
-﻿<!DOCTYPE html>
+﻿@{
+    Haiku.DTO.SessionDto session = null;
+    try
+    {
+        session = (Haiku.DTO.SessionDto)Session[Haiku.Services.SessionsService.SessionTokenLabelConst];
+    }
+    catch
+    {
+
+    }
+}
+
+<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8" />
@@ -13,17 +25,29 @@
             <div class="navbar-header">
                 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
                     <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
                 </button>
                 @Html.ActionLink("HaikuPub", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
-                    <li>@Html.ActionLink("Join", "Index", "Register")</li>
-                    <li>@Html.ActionLink("Publish", "Index", "Publish")</li>
+                    @if (session == null)
+                    {
+                        <li>@Html.ActionLink("Join", "Register", "Users")</li>
+                    }
+                    @if (session != null)
+                    {
+                        <li>@Html.ActionLink("Publish", "Publish", "Haikus")</li>
+                    }
                     <li>@Html.ActionLink("Haikus", "Index", "Haikus", new { area = "", sortBy = "Date", order = "Descending", skip = 0, take = 20 }, null)</li>
                 </ul>
+                @if (session != null)
+                {
+                    <ul class="nav navbar-nav navbar-right">
+                        <li>@Html.ActionLink(session.Nickname, "Details", "Users")</li>
+                        <li>@Html.ActionLink("Logout", "Logout", "Users")</li>
+                    </ul>
+                    <p class="navbar-text navbar-right">Hello,</p>
+                }
             </div>
         </div>
     </div>
