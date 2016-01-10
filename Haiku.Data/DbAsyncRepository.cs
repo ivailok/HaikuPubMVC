@@ -56,6 +56,11 @@ namespace Haiku.Data
             return this.entities.Where(whereClause).SingleOrDefaultAsync();
         }
 
+        public Task<TEntity> GetLastAsync<TKey>(Expression<Func<TEntity, bool>> whereClause, Expression<Func<TEntity, TKey>> orderClause)
+        {
+            return this.entities.Where(whereClause).OrderByDescending(orderClause).FirstOrDefaultAsync();
+        }
+             
         public TEntity Add(TEntity entity)
         {
             return this.entities.Add(entity);

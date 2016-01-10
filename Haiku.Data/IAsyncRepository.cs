@@ -26,6 +26,8 @@ namespace Haiku.Data
 
         Task<TEntity> GetUniqueAsync(Expression<Func<TEntity, bool>> whereClause);
 
+        Task<TEntity> GetLastAsync<TKey>(Expression<Func<TEntity, bool>> whereClause, Expression<Func<TEntity, TKey>> orderClause);
+
         TEntity Add(TEntity entity);
 
         void Update(TEntity entity);

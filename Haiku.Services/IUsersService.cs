@@ -12,6 +12,8 @@ namespace Haiku.Services
     public interface IUsersService
     {
         Task<SessionDto> RegisterAuthorAsync(AuthorRegisteringDto dto);
+
+        Task LogoutAsync(string nickname);
         
         Task<HaikuPublishedDto> PublishHaikuAsync(string nickname, HaikuPublishingDto dto);
 

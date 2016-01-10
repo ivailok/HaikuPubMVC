@@ -60,6 +60,13 @@ namespace Haiku.Web.Controllers
         public ActionResult Login()
         {
             return View();
-        } 
+        }
+        
+        public async Task<ActionResult> Logout()
+        {
+            await this.usersService.LogoutAsync(LoggedUserNickname).ConfigureAwait(false);
+            Session.Remove(SessionsService.SessionTokenLabelConst);
+            return RedirectToAction("Login", "Users");
+        }
     }
 }

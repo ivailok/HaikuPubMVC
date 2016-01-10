@@ -1,6 +1,6 @@
 ﻿$(document).ready(function () {
-    var submitBtn = $('#submit-button');
-    submitBtn.on('click', function () {
-        submitBtn.prop('disabled', true);
-    });
+    $("#authentication-form").data("validator").settings.submitHandler = function (form) {
+        $("#submit-button").attr("disabled", true).val("Working");
+        form.submit();
+    };
 });

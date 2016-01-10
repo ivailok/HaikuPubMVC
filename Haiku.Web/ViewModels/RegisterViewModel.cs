@@ -17,6 +17,9 @@ namespace Haiku.Web.ViewModels
         [MinLength(4, ErrorMessage = "Minimum 4 symbols.")]
         public string OriginalPassword { get; set; }
 
+        [Compare("OriginalPassword", ErrorMessage = "Passwords don't match.")]
+        public string RepeatedPassword { get; set; }
+
         [Required]
         [StringLength(128, MinimumLength = 128)]
         public string Password { get; set; }

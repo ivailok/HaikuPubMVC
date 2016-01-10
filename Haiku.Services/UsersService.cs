@@ -77,6 +77,14 @@ namespace Haiku.Services
             return token;
         }
 
+        public async Task LogoutAsync(string nickname)
+        {
+            var session = await this.UnitOfWork.SessionsRepository
+                .GetLastAsync<DateTime>(s => s.Nickname == nickname, s => s.From).ConfigureAwait(false);
+            this.UnitOfWork.SessionsRepository.Delete(session);
+            await this.UnitOfWork.CommitAsync().ConfigureAwait(false);
+        }
+
         public async Task<HaikuPublishedDto> PublishHaikuAsync(string nickname, HaikuPublishingDto dto)
         {
             var user = await FindUserByNicknameAsync(nickname).ConfigureAwait(false);
