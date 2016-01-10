@@ -51,7 +51,8 @@ namespace Haiku.Web.Controllers
             };
             return View(model);
         }
-
+        
+        [Author]
         public ActionResult Publish()
         {
             PublishViewModel model = new PublishViewModel();
@@ -101,6 +102,7 @@ namespace Haiku.Web.Controllers
             return View(model);
         }
 
+        [Author]
         public async Task<ActionResult> Edit(int id)
         {
             var dto = await this.haikusService.GetHaikuAsync(id).ConfigureAwait(false);
@@ -113,6 +115,7 @@ namespace Haiku.Web.Controllers
         }
 
         [HttpPost]
+        [Author]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Edit(int haikuId, HaikuEditViewModel model)
         {
@@ -130,7 +133,6 @@ namespace Haiku.Web.Controllers
                     routeParams.Add("Take", 20);
                     routeParams.Add("SortBy", "Date");
                     routeParams.Add("Order", "Descending");
-                    routeParams.Add("Notification", "Successfully edited!");
                     return RedirectToAction("Index", "Haikus", routeParams);
                 }
                 catch (NotFoundException e)
@@ -146,6 +148,7 @@ namespace Haiku.Web.Controllers
             return View(model);
         }
         
+        [Author]
         public async Task<ActionResult> Delete(int id)
         {
             await this.haikusService.DeleteHaikuAsync(id).ConfigureAwait(false);

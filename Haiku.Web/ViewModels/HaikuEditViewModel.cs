@@ -6,7 +6,7 @@ using System.Web;
 
 namespace Haiku.Web.ViewModels
 {
-    public class HaikuEditViewModel : AuthorizationViewModel
+    public class HaikuEditViewModel
     {
         public int Id { get; set; }
 
