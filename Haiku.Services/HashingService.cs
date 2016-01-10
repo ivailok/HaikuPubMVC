@@ -9,7 +9,7 @@ namespace Haiku.Services
 {
     public enum HashingType
     {
-        Strong = 1 << 18,
+        Strong = 1 << 15,
         Weak = 1 << 10
     }
 
