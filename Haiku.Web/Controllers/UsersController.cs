@@ -32,31 +32,18 @@ namespace Haiku.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Register(RegisterViewModel model)
         {
-            if (ModelState.IsValid)
+            return await RunAndHandleExceptions(async (m) =>
             {
-                try
+                var session = await this.usersService.RegisterAuthorAsync(new AuthorRegisteringDto()
                 {
-                    var session = await this.usersService.RegisterAuthorAsync(new AuthorRegisteringDto()
-                    {
-                        Nickname = model.Nickname,
-                        Password = model.Password,
-                    }).ConfigureAwait(false);
+                    Nickname = m.Nickname,
+                    Password = m.Password,
+                }).ConfigureAwait(false);
 
-                    Session[SessionsService.SessionTokenLabelConst] = session;
+                Session[SessionsService.SessionTokenLabelConst] = session;
 
-                    return RedirectToAction("Publish", "Haikus");
-                }
-                catch (DuplicateUserNicknameException e)
-                {
-                    ModelState.AddModelError("GeneralError", e.Message);
-                }
-                catch (Exception e)
-                {
-                    ModelState.AddModelError("GeneralError", "We have a problem now. Try later.");
-                }
-            }
-
-            return View(model);
+                return RedirectToAction("Publish", "Haikus");
+            }, model).ConfigureAwait(false);
         }
         
         public ActionResult Login(string returnUrl)
@@ -70,45 +57,32 @@ namespace Haiku.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Login(LoginViewModel model, string returnUrl)
         {
-            if (ModelState.IsValid)
+            return await RunAndHandleExceptions(async (m) =>
             {
-                try
+                var session = await this.usersService.LoginAsync(new AuthorLoginDto()
                 {
-                    var session = await this.usersService.LoginAsync(new AuthorLoginDto()
-                    {
-                        Nickname = model.Nickname,
-                        Password = model.Password
-                    }).ConfigureAwait(false);
+                    Nickname = m.Nickname,
+                    Password = m.Password
+                }).ConfigureAwait(false);
 
-                    Session[SessionsService.SessionTokenLabelConst] = session;
+                Session[SessionsService.SessionTokenLabelConst] = session;
 
-                    if (string.IsNullOrEmpty(returnUrl))
+                if (string.IsNullOrEmpty(returnUrl))
+                {
+                    return RedirectToAction("Publish", "Haikus");
+                }
+                else
+                {
+                    if (Url.IsLocalUrl(returnUrl))
                     {
-                        return RedirectToAction("Publish", "Haikus");
+                        return Redirect(returnUrl);
                     }
                     else
                     {
-                        if (Url.IsLocalUrl(returnUrl))
-                        {
-                            return Redirect(returnUrl);
-                        }
-                        else
-                        {
-                            return RedirectToAction("Publish", "Haikus");
-                        }
+                        return RedirectToAction("Publish", "Haikus");
                     }
                 }
-                catch (NotFoundException e)
-                {
-                    ModelState.AddModelError("GeneralError", e.Message);
-                }
-                catch (Exception e)
-                {
-                    ModelState.AddModelError("GeneralError", "We have a problem now. Try later.");
-                }
-            }
-
-            return View(model);
+            }, model).ConfigureAwait(false);
         }
         
         [Author]

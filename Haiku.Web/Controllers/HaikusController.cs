@@ -64,29 +64,20 @@ namespace Haiku.Web.Controllers
         [Author]
         public async Task<ActionResult> Publish(PublishViewModel model)
         {
-            if (ModelState.IsValid)
+            return await RunAndHandleExceptions(async (m) =>
             {
-                try
+                await this.usersService.PublishHaikuAsync(LoggedUserNickname, new HaikuPublishingDto()
                 {
-                    await this.usersService.PublishHaikuAsync(LoggedUserNickname, new HaikuPublishingDto()
-                    {
-                        Text = model.Text
-                    }).ConfigureAwait(false);
+                    Text = model.Text
+                }).ConfigureAwait(false);
 
-                    var routeParams = new RouteValueDictionary();
-                    routeParams.Add("Skip", 0);
-                    routeParams.Add("Take", 20);
-                    routeParams.Add("SortBy", "Date");
-                    routeParams.Add("Order", "Descending");
-                    return RedirectToAction("Index", "Haikus", routeParams);
-                }
-                catch (Exception e)
-                {
-                    ModelState.AddModelError("GeneralError", "We have a problem now. Try later.");
-                }
-            }
-
-            return View(model);
+                var routeParams = new RouteValueDictionary();
+                routeParams.Add("Skip", 0);
+                routeParams.Add("Take", 20);
+                routeParams.Add("SortBy", "Date");
+                routeParams.Add("Order", "Descending");
+                return RedirectToAction("Index", "Haikus", routeParams);
+            }, model).ConfigureAwait(false);
         }
 
         public async Task<ActionResult> Details(int id)
@@ -119,33 +110,20 @@ namespace Haiku.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Edit(int haikuId, HaikuEditViewModel model)
         {
-            if (ModelState.IsValid)
+            return await RunAndHandleExceptions(async (m) =>
             {
-                try
+                await this.haikusService.ModifyHaikuAsync(haikuId, new HaikuModifyDto()
                 {
-                    await this.haikusService.ModifyHaikuAsync(haikuId, new HaikuModifyDto()
-                    {
-                        Text = model.Text
-                    }).ConfigureAwait(false);
-                    
-                    var routeParams = new RouteValueDictionary();
-                    routeParams.Add("Skip", 0);
-                    routeParams.Add("Take", 20);
-                    routeParams.Add("SortBy", "Date");
-                    routeParams.Add("Order", "Descending");
-                    return RedirectToAction("Index", "Haikus", routeParams);
-                }
-                catch (NotFoundException e)
-                {
-                    ModelState.AddModelError("GeneralError", e.Message);
-                }
-                catch (Exception e)
-                {
-                    ModelState.AddModelError("GeneralError", "We have problems right now. Please try again later.");
-                }
-            }
+                    Text = model.Text
+                }).ConfigureAwait(false);
 
-            return View(model);
+                var routeParams = new RouteValueDictionary();
+                routeParams.Add("Skip", 0);
+                routeParams.Add("Take", 20);
+                routeParams.Add("SortBy", "Date");
+                routeParams.Add("Order", "Descending");
+                return RedirectToAction("Index", "Haikus", routeParams);
+            }, model).ConfigureAwait(false);
         }
         
         [Author]
