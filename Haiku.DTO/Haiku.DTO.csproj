@@ -46,6 +46,7 @@
     <Compile Include="Exceptions\NotFoundException.cs" />
     <Compile Include="Exceptions\SessionException.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Request\AuthorLoginDto.cs" />
     <Compile Include="Request\HaikuModifyDto.cs" />
     <Compile Include="Request\HaikuPublishingDto.cs" />
     <Compile Include="Request\HaikuRatingDto.cs" />

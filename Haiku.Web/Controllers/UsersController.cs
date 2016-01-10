@@ -28,19 +28,20 @@ namespace Haiku.Web.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<ActionResult> Register(RegisterViewModel model)
         {
             if (ModelState.IsValid)
             {
                 try
                 {
-                    var token = await this.usersService.RegisterAuthorAsync(new AuthorRegisteringDto()
+                    var session = await this.usersService.RegisterAuthorAsync(new AuthorRegisteringDto()
                     {
                         Nickname = model.Nickname,
                         Password = model.Password,
                     }).ConfigureAwait(false);
 
-                    Session[SessionsService.SessionTokenLabelConst] = token;
+                    Session[SessionsService.SessionTokenLabelConst] = session;
 
                     return RedirectToAction("Publish", "Haikus");
                 }
@@ -56,10 +57,42 @@ namespace Haiku.Web.Controllers
 
             return View(model);
         }
-
+        
         public ActionResult Login()
         {
-            return View();
+            LoginViewModel model = new LoginViewModel();
+            return View(model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> Login(LoginViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    var session = await this.usersService.LoginAsync(new AuthorLoginDto()
+                    {
+                        Nickname = model.Nickname,
+                        Password = model.Password
+                    }).ConfigureAwait(false);
+
+                    Session[SessionsService.SessionTokenLabelConst] = session;
+
+                    return RedirectToAction("Publish", "Haikus");
+                }
+                catch (NotFoundException e)
+                {
+                    ModelState.AddModelError("GeneralError", e.Message);
+                }
+                catch (Exception e)
+                {
+                    ModelState.AddModelError("GeneralError", "We have a problem now. Try later.");
+                }
+            }
+
+            return View(model);
         }
         
         public async Task<ActionResult> Logout()

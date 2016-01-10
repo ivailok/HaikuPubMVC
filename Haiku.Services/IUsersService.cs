@@ -13,6 +13,8 @@ namespace Haiku.Services
     {
         Task<SessionDto> RegisterAuthorAsync(AuthorRegisteringDto dto);
 
+        Task<SessionDto> LoginAsync(AuthorLoginDto dto);
+
         Task LogoutAsync(string nickname);
         
         Task<HaikuPublishedDto> PublishHaikuAsync(string nickname, HaikuPublishingDto dto);

@@ -70,11 +70,33 @@ namespace Haiku.Services
             };
             this.UnitOfWork.UsersRepository.Add(user);
 
-            var token = await this.SessionsService.AddNewSessionAsync(user.Nickname, user.Salt).ConfigureAwait(false);
+            var session = await this.SessionsService.AddNewSessionAsync(user.Nickname, user.Salt).ConfigureAwait(false);
 
             await this.UnitOfWork.CommitAsync().ConfigureAwait(false);
 
-            return token;
+            return session;
+        }
+
+        public async Task<SessionDto> LoginAsync(AuthorLoginDto dto)
+        {
+            var user = await this.UnitOfWork.UsersRepository
+                .GetUniqueAsync(u => u.Nickname == dto.Nickname).ConfigureAwait(false);
+            if (user == null)
+            {
+                throw new NotFoundException("Wrong nickname or password.");
+            }
+
+            string pass = await HashingService.GetHashAsync(dto.Password, user.Salt, HashingType.Strong);
+            if (pass != user.Password)
+            {
+                throw new NotFoundException("Wrong nickname or password.");
+            }
+
+            var session = await this.SessionsService.AddNewSessionAsync(user.Nickname, user.Salt).ConfigureAwait(false);
+
+            await this.UnitOfWork.CommitAsync().ConfigureAwait(false);
+
+            return session;
         }
 
         public async Task LogoutAsync(string nickname)
