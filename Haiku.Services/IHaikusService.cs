@@ -28,5 +28,9 @@ namespace Haiku.Services
         Task RateAsync(string nickname, int haikuId, HaikuRatingDto dto);
 
         Task SendReport(int id, HaikuReportingDto dto);
+
+        PagingMetadata GetHaikusForPagingMetadata(string nickname);
+
+        Task<IEnumerable<HaikuGetDto>> GetHaikusForAsync(string nickname, PagingQueryParams queryParams);
     }
 }

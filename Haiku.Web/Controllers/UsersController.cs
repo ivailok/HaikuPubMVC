@@ -3,6 +3,7 @@ using Haiku.DTO.Request;
 using Haiku.Services;
 using Haiku.Web.Filters;
 using Haiku.Web.ViewModels;
+using PagedList;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,10 +16,12 @@ namespace Haiku.Web.Controllers
     public class UsersController : BaseController
     {
         private IUsersService usersService;
+        private IHaikusService haikusService;
 
-        public UsersController(IUsersService usersService)
+        public UsersController(IUsersService usersService, IHaikusService haikusService)
         {
             this.usersService = usersService;
+            this.haikusService = haikusService;
         }
 
         // GET: Register
@@ -91,6 +94,31 @@ namespace Haiku.Web.Controllers
             await this.usersService.LogoutAsync(LoggedUserNickname).ConfigureAwait(false);
             Session.Remove(SessionsService.SessionTokenLabelConst);
             return RedirectToAction("Login", "Users");
+        }
+
+        [Author]
+        public async Task<ActionResult> Details(string nickname, PagingQueryParams queryParams)
+        {
+            if (queryParams.Take == 0)
+            {
+                queryParams.Take = 20;
+            }
+
+            MyHaikusListViewModel model = new MyHaikusListViewModel();
+            var haikus = (await this.haikusService.GetHaikusForAsync(LoggedUserNickname, queryParams).ConfigureAwait(false)).Select(i => new HaikuListItem()
+            {
+                Id = i.Id,
+                Text = i.Text,
+                Rating = i.Rating
+            }).ToList();
+            var pageData = this.haikusService.GetHaikusForPagingMetadata(LoggedUserNickname);
+            model.Haikus = new StaticPagedList<HaikuListItem>(haikus, queryParams.Skip / queryParams.Take + 1, queryParams.Take, pageData.TotalCount);
+            model.QueryParams = new PagingQueryParams()
+            {
+                Skip = queryParams.Skip,
+                Take = queryParams.Take
+            };
+            return View(model);
         }
     }
 }

@@ -162,5 +162,32 @@ namespace Haiku.Services
             haiku.Reports.Add(report);
             await this.UnitOfWork.CommitAsync().ConfigureAwait(false);
         }
+
+        public PagingMetadata GetHaikusForPagingMetadata(string nickname)
+        {
+            PagingMetadata metadata = new PagingMetadata();
+            metadata.TotalCount = this.UnitOfWork.HaikusRepository
+                .QueryInclude(h => h.User)
+                .Where(h => h.User.Nickname == nickname)
+                .Count();
+            return metadata;
+        }
+
+        public async Task<IEnumerable<HaikuGetDto>> GetHaikusForAsync(string nickname, PagingQueryParams queryParams)
+        {
+            var user = await this.UnitOfWork.UsersRepository
+                .GetUniqueAsync(u => u.Nickname == nickname).ConfigureAwait(false);
+
+            var query = this.UnitOfWork.HaikusRepository
+                .QueryInclude(h => h.User)
+                .Where(h => h.User.Nickname == nickname)
+                .OrderBy(h => h.DatePublished)
+                .Skip(queryParams.Skip)
+                .Take(queryParams.Take);
+
+            var haikus = await this.UnitOfWork.HaikusRepository.GetAllAsync(query).ConfigureAwait(false);
+
+            return haikus.Select(h => Mapper.MapHaikuEntityToHaikuGetDto(h));
+        }
     }
 }
