@@ -96,36 +96,63 @@ namespace Haiku.Services
             return Mapper.MapHaikuEntityToHaikuGetDto(haiku);
         }
 
-        public async Task<HaikuRatedDto> RateAsync(int id, HaikuRatingDto dto)
+        private async Task RateExistingAsync(HaikuRating existingRating, HaikuRatingDto dto)
         {
-            var haiku = await this.UnitOfWork.HaikusRepository.GetByIdAsync(id).ConfigureAwait(false);
-            var rating = Mapper.MapHaikuRateDtoToHaikuRating(dto);
-            haiku.Ratings.Add(rating);
+            var haiku = await this.UnitOfWork.HaikusRepository.GetByIdAsync(existingRating.HaikuId).ConfigureAwait(false);
 
-            // updating haiku rating
+            var oldRating = existingRating.Value;
+            existingRating.Value = dto.Rating;
+
             var oldHaikuRating = haiku.Rating;
-            haiku.RatingsCount++;
-            haiku.RatingsSum += rating.Value;
-            haiku.Rating = ((double) haiku.RatingsSum) / haiku.RatingsCount;
+            haiku.RatingsSum = haiku.RatingsSum - oldRating + dto.Rating;
+            haiku.Rating = ((double)haiku.RatingsSum) / haiku.RatingsCount;
 
-            // updating user rating
             var user = await this.UnitOfWork.UsersRepository.GetByIdAsync(haiku.UserId);
-            if (oldHaikuRating == null)
-            {
-                user.HaikusRatingSum += haiku.Rating.Value;
-                user.HaikusCount++;
-            }
-            else
-            {
-                user.HaikusRatingSum = user.HaikusRatingSum- oldHaikuRating.Value + haiku.Rating.Value;
-            }
+            user.HaikusRatingSum = user.HaikusRatingSum - oldHaikuRating.Value + haiku.Rating.Value;
             user.Rating = user.HaikusRatingSum / user.HaikusCount;
 
             await this.UnitOfWork.CommitAsync().ConfigureAwait(false);
-            return new HaikuRatedDto()
+        }
+
+        public async Task RateAsync(string nickname, int haikuId, HaikuRatingDto dto)
+        {
+            var userId = (await this.UnitOfWork.UsersRepository
+                .GetUniqueAsync(u => u.Nickname == nickname).ConfigureAwait(false)).Id;
+            var existingRating = await this.UnitOfWork.RatingsRepository.GetByIdAsync(userId, haikuId).ConfigureAwait(false);
+
+            if (existingRating != null)
             {
-                HaikuRating = haiku.Rating.Value
-            };
+                await RateExistingAsync(existingRating, dto).ConfigureAwait(false);
+            }
+            else
+            {
+                var haiku = await this.UnitOfWork.HaikusRepository.GetByIdAsync(haikuId).ConfigureAwait(false);
+                var rating = Mapper.MapHaikuRateDtoToHaikuRating(dto);
+                haiku.Ratings.Add(rating);
+
+                // updating haiku rating
+                var oldHaikuRating = haiku.Rating;
+                haiku.RatingsCount++;
+                haiku.RatingsSum += rating.Value;
+                haiku.Rating = ((double)haiku.RatingsSum) / haiku.RatingsCount;
+
+                // updating user rating
+                var user = await this.UnitOfWork.UsersRepository.GetByIdAsync(haiku.UserId);
+                if (oldHaikuRating == null)
+                {
+                    user.HaikusRatingSum += haiku.Rating.Value;
+                    user.HaikusCount++;
+                }
+                else
+                {
+                    user.HaikusRatingSum = user.HaikusRatingSum - oldHaikuRating.Value + haiku.Rating.Value;
+                }
+                user.Rating = user.HaikusRatingSum / user.HaikusCount;
+
+                rating.UserId = userId;
+
+                await this.UnitOfWork.CommitAsync().ConfigureAwait(false);
+            }
         }
 
         public async Task SendReport(int id, HaikuReportingDto dto)

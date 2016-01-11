@@ -25,7 +25,7 @@ namespace Haiku.Services
 
         Task<HaikuGetDto> GetHaikuAsync(int haikuId);
 
-        Task<HaikuRatedDto> RateAsync(int id, HaikuRatingDto dto);
+        Task RateAsync(string nickname, int haikuId, HaikuRatingDto dto);
 
         Task SendReport(int id, HaikuReportingDto dto);
     }

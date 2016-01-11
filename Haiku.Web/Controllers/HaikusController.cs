@@ -177,7 +177,13 @@ namespace Haiku.Web.Controllers
         {
             return await RunAndHandleExceptions(async (haikuId) =>
             {
-                await this.haikusService.RateAsync(id, dto).ConfigureAwait(false);
+                var author = await this.haikusService.GetHaikuAuthorAsync(haikuId).ConfigureAwait(false);
+                if (author == LoggedUserNickname)
+                {
+                    throw new DTO.Exceptions.UnauthorizedAccessException("Forbidden!");
+                }
+
+                await this.haikusService.RateAsync(LoggedUserNickname, id, dto).ConfigureAwait(false);
                 return RedirectToAction("Details", "Haikus");
             }, id).ConfigureAwait(false);
         }
