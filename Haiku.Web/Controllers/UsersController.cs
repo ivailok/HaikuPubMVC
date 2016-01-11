@@ -32,7 +32,7 @@ namespace Haiku.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Register(RegisterViewModel model)
         {
-            return await RunAndHandleExceptions(async (m) =>
+            return await ValidateAndHandleExceptions(async (m) =>
             {
                 var session = await this.usersService.RegisterAuthorAsync(new AuthorRegisteringDto()
                 {
@@ -57,7 +57,7 @@ namespace Haiku.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Login(LoginViewModel model, string returnUrl)
         {
-            return await RunAndHandleExceptions(async (m) =>
+            return await ValidateAndHandleExceptions(async (m) =>
             {
                 var session = await this.usersService.LoginAsync(new AuthorLoginDto()
                 {

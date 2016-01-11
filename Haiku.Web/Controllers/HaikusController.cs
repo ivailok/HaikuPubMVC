@@ -25,6 +25,15 @@ namespace Haiku.Web.Controllers
             this.usersService = usersService;
         }
 
+        private async Task CheckIfMineAsync(int haikuId)
+        {
+            var author = await this.haikusService.GetHaikuAuthorAsync(haikuId).ConfigureAwait(false);
+            if (author != LoggedUserNickname)
+            {
+                throw new DTO.Exceptions.UnauthorizedAccessException("Forbidden!");
+            }
+        }
+
         public async Task<ActionResult> Index(HaikusGetQueryParams queryParams)
         {
             if (queryParams.Take == 0)
@@ -64,7 +73,7 @@ namespace Haiku.Web.Controllers
         [Author]
         public async Task<ActionResult> Publish(PublishViewModel model)
         {
-            return await RunAndHandleExceptions(async (m) =>
+            return await ValidateAndHandleExceptions(async (m) =>
             {
                 await this.usersService.PublishHaikuAsync(LoggedUserNickname, new HaikuPublishingDto()
                 {
@@ -96,13 +105,18 @@ namespace Haiku.Web.Controllers
         [Author]
         public async Task<ActionResult> Edit(int id)
         {
-            var dto = await this.haikusService.GetHaikuAsync(id).ConfigureAwait(false);
-            HaikuEditViewModel model = new HaikuEditViewModel()
+            return await RunAndHandleExceptions(async (haikuId) =>
             {
-                Id = dto.Id,
-                Text = dto.Text,
-            };
-            return View(model);
+                await CheckIfMineAsync(haikuId).ConfigureAwait(false);
+
+                var dto = await this.haikusService.GetHaikuAsync(haikuId).ConfigureAwait(false);
+                HaikuEditViewModel model = new HaikuEditViewModel()
+                {
+                    Id = dto.Id,
+                    Text = dto.Text,
+                };
+                return View(model);
+            }, id);
         }
 
         [HttpPost]
@@ -110,8 +124,17 @@ namespace Haiku.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Edit(int haikuId, HaikuEditViewModel model)
         {
-            return await RunAndHandleExceptions(async (m) =>
+            return await ValidateAndHandleExceptions(async (m) =>
             {
+                try
+                {
+                    await this.CheckIfMineAsync(haikuId).ConfigureAwait(false);
+                }
+                catch (Exception e)
+                {
+                    return View("Error", new ErrorViewModel() { ErrorMessage = e.Message });
+                }
+
                 await this.haikusService.ModifyHaikuAsync(haikuId, new HaikuModifyDto()
                 {
                     Text = model.Text
@@ -129,8 +152,12 @@ namespace Haiku.Web.Controllers
         [Author]
         public async Task<ActionResult> Delete(int id)
         {
-            await this.haikusService.DeleteHaikuAsync(id).ConfigureAwait(false);
-            return RedirectToAction("Index", "Haikus");
+            return await RunAndHandleExceptions(async (haikuId) =>
+            {
+                await CheckIfMineAsync(haikuId).ConfigureAwait(false);
+                await this.haikusService.DeleteHaikuAsync(haikuId).ConfigureAwait(false);
+                return RedirectToAction("Index", "Haikus");
+            }, id).ConfigureAwait(false);
         }
     }
 }

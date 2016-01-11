@@ -9,7 +9,7 @@ using System.Web.Mvc;
 
 namespace Haiku.Web.ViewModels
 {
-    public class HaikusListViewModel : NotificationViewModel
+    public class HaikusListViewModel
     {
         public HaikusListViewModel()
         {

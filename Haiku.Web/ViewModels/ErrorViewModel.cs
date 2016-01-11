@@ -5,8 +5,8 @@ using System.Web;
 
 namespace Haiku.Web.ViewModels
 {
-    public class NotificationViewModel
+    public class ErrorViewModel
     {
-        public string Notification { get; set; }
+        public string ErrorMessage { get; set; }
     }
 }

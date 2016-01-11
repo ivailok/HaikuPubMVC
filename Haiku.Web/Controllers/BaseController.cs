@@ -21,7 +21,7 @@ namespace Haiku.Web.Controllers
             }
         }
 
-        protected virtual async Task<ActionResult> RunAndHandleExceptions<T>(Func<T, Task<ActionResult>> func, T model)
+        protected virtual async Task<ActionResult> ValidateAndHandleExceptions<T>(Func<T, Task<ActionResult>> func, T model)
         {
             if (ModelState.IsValid)
             {
@@ -37,6 +37,10 @@ namespace Haiku.Web.Controllers
                 {
                     ModelState.AddModelError("GeneralError", e.Message);
                 }
+                catch (DTO.Exceptions.UnauthorizedAccessException e)
+                {
+                    ModelState.AddModelError("GeneralError", e.Message);
+                }
                 catch
                 {
                     ModelState.AddModelError("GeneralError", "We have a problem now. Try later.");
@@ -44,6 +48,37 @@ namespace Haiku.Web.Controllers
             }
 
             return View(model);
+        }
+
+        protected virtual async Task<ActionResult> RunAndHandleExceptions<T>(Func<T, Task<ActionResult>> func, T data)
+        {
+            string errorMessage = string.Empty;
+            try
+            {
+                return await func(data).ConfigureAwait(false);
+            }
+            catch (NotFoundException e)
+            {
+                errorMessage = e.Message;
+            }
+            catch (DuplicateUserNicknameException e)
+            {
+                errorMessage = e.Message;
+            }
+            catch (DTO.Exceptions.UnauthorizedAccessException e)
+            {
+                errorMessage = e.Message;
+            }
+            catch
+            {
+                errorMessage = "We have a problem now. Try later.";
+            }
+
+            ErrorViewModel model = new ErrorViewModel()
+            {
+                ErrorMessage = errorMessage
+            };
+            return View("Error", model);
         }
     }
 }
