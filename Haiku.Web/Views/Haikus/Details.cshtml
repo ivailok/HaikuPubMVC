@@ -1,7 +1,43 @@
-﻿@{
-    Layout = "~/Views/Shared/_Layout.cshtml";
+﻿@model Haiku.Web.ViewModels.HaikuDetailsViewModel
+
+@section styles {
+    @Styles.Render("~/Content/rateit.css")
+    @Styles.Render("~/Content/bigstars.css")
 }
 
+@{
+    ViewBag.Title = "Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 
+    Haiku.DTO.SessionDto session = null;
+    try
+    {
+        session = (Haiku.DTO.SessionDto)Session[Haiku.Services.SessionsService.SessionTokenLabelConst];
+    }
+    catch
+    {
 
+    }
+}
 
+<br />
+
+@Html.ValidationMessage("GeneralError", new { @class = "text-danger" })
+
+<br />
+
+@Html.HiddenFor(model => model.Id, new { @id = "haikuId" } )
+
+@Html.TextAreaFor(model => model.Text)
+
+@if (session != null && session.Nickname != Model.Author)
+{
+    @Html.DisplayTextFor(model => model.Author)
+    <span class="rateit" id="rating" data-rateit-value="@Model.MyRating" data-rateit-max="5" data-rateit-step="1" data-rateit-resetable="false"></span>
+    <span id="ratingHover"></span>
+}
+
+@section scripts {
+    @Scripts.Render("~/Scripts/jquery.rateit.min.js")
+    @Scripts.Render("~/Scripts/rating.js")  
+}

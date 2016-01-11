@@ -122,6 +122,10 @@
     <Compile Include="Migrations\201601101239430_Updated_Pass_Length.Designer.cs">
       <DependentUpon>201601101239430_Updated_Pass_Length.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201601111213072_Updated_Rating.cs" />
+    <Compile Include="Migrations\201601111213072_Updated_Rating.Designer.cs">
+      <DependentUpon>201601111213072_Updated_Rating.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Entities\TEntity.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -181,6 +185,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201601101239430_Updated_Pass_Length.resx">
       <DependentUpon>201601101239430_Updated_Pass_Length.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201601111213072_Updated_Rating.resx">
+      <DependentUpon>201601111213072_Updated_Rating.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

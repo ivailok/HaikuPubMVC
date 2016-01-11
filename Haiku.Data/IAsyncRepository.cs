@@ -22,7 +22,7 @@ namespace Haiku.Data
         
         Task<IList<TEntity>> GetAllAsync(IOrderedQueryable<TEntity> query);
 
-        Task<TEntity> GetByIdAsync(object id);
+        Task<TEntity> GetByIdAsync(params object[] id);
 
         Task<TEntity> GetUniqueAsync(Expression<Func<TEntity, bool>> whereClause);
 

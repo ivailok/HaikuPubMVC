@@ -195,5 +195,12 @@ namespace Haiku.Services
             this.UnitOfWork.UsersRepository.Delete(user);
             await this.UnitOfWork.CommitAsync().ConfigureAwait(false);
         }
+
+        public async Task<int> GetRatingForHaiku(string nickname, int haikuId)
+        {
+            var user = await FindUserByNicknameAsync(nickname).ConfigureAwait(false);
+            var rating = await this.UnitOfWork.RatingsRepository.GetByIdAsync(user.Id, haikuId).ConfigureAwait(false);
+            return rating.Value;
+        }
     }
 }

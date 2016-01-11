@@ -46,7 +46,7 @@ namespace Haiku.Data
             return await query.ToListAsync().ConfigureAwait(false);
         }
 
-        public Task<TEntity> GetByIdAsync(object id)
+        public Task<TEntity> GetByIdAsync(params object[] id)
         {
             return this.entities.FindAsync(id);
         }

@@ -26,7 +26,13 @@ namespace Haiku.Data
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
-            base.OnModelCreating(modelBuilder);
+            modelBuilder.Entity<HaikuRating>
+                ().HasKey(r => new { r.UserId, r.HaikuId });
+
+            modelBuilder.Entity<HaikuEntity>()
+                .HasMany(h => h.Ratings)
+                .WithRequired()
+                .HasForeignKey(r => r.HaikuId);
         }
     }
 }

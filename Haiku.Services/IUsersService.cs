@@ -28,5 +28,7 @@ namespace Haiku.Services
         Task DeleteHaikusAsync(string nickname);
 
         Task DeleteProfileAsync(string nickname);
+
+        Task<int> GetRatingForHaiku(string nickname, int haikuId);
     }
 }

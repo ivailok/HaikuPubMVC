@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace Haiku.Data.Entities
 {
     [Table("Ratings")]
-    public class HaikuRating : TEntity<int>
+    public class HaikuRating
     {
         public int Value { get; set; }
 
@@ -18,5 +18,7 @@ namespace Haiku.Data.Entities
         public int HaikuId { get; set; }
 
         public virtual HaikuEntity Haiku { get; set; }
+        
+        public int UserId { get; set; }
     }
 }

@@ -91,15 +91,27 @@ namespace Haiku.Web.Controllers
 
         public async Task<ActionResult> Details(int id)
         {
-            var dto = await this.haikusService.GetHaikuAsync(id).ConfigureAwait(false);
-            HaikuListItem model = new HaikuListItem()
+            return await RunAndHandleExceptions(async (haikuId) =>
             {
-                Id = dto.Id,
-                Text = dto.Text,
-                Author = dto.Author,
-                Rating = dto.Rating
-            };
-            return View(model);
+                int myRating = -1;
+                try
+                {
+                    myRating = await this.usersService.GetRatingForHaiku(LoggedUserNickname, id).ConfigureAwait(false);
+                }
+                catch
+                {
+                }
+
+                var dto = await this.haikusService.GetHaikuAsync(id).ConfigureAwait(false);
+                HaikuDetailsViewModel model = new HaikuDetailsViewModel()
+                {
+                    Id = dto.Id,
+                    Text = dto.Text,
+                    Author = dto.Author,
+                    MyRating = myRating
+                };
+                return View(model);
+            }, id);
         }
 
         [Author]
@@ -157,6 +169,16 @@ namespace Haiku.Web.Controllers
                 await CheckIfMineAsync(haikuId).ConfigureAwait(false);
                 await this.haikusService.DeleteHaikuAsync(haikuId).ConfigureAwait(false);
                 return RedirectToAction("Index", "Haikus");
+            }, id).ConfigureAwait(false);
+        }
+
+        [Author]
+        public async Task<ActionResult> Rate(int id, HaikuRatingDto dto)
+        {
+            return await RunAndHandleExceptions(async (haikuId) =>
+            {
+                await this.haikusService.RateAsync(id, dto).ConfigureAwait(false);
+                return RedirectToAction("Details", "Haikus");
             }, id).ConfigureAwait(false);
         }
     }
