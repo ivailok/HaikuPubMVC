@@ -1,6 +1,11 @@
 ﻿@model Haiku.Web.ViewModels.HaikusListViewModel
 @using PagedList.Mvc;
-<link href="~/Content/PagedList.css" rel="stylesheet" type="text/css" />
+@section styles {
+    @Styles.Render("~/Content/PagedList.css")
+    @Styles.Render("~/Content/bootstrap-select.min.css")
+    @Styles.Render("~/Content/rateit.css")
+    @Styles.Render("~/Content/haikus.min.css")
+}
 
 @{
     ViewBag.Title = "Haikus";
@@ -24,13 +29,13 @@
         <div class="form-group">
             @Html.LabelFor(model => model.QueryParams.SortBy, "Sort by:", htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.DropDownList("SortBy", Model.SortOptions)
+                @Html.DropDownList("SortBy", Model.SortOptions, new { @class = "selectpicker", @data_style = "btn-primary" })
             </div>
         </div>
         <div class="form-group">
             @Html.LabelFor(model => model.QueryParams.Order, "Order:", htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.DropDownList("Order", Model.OrderOptions)
+                @Html.DropDownList("Order", Model.OrderOptions, new { @class = "selectpicker", @data_style = "btn-primary" })
             </div>
         </div>
 
@@ -45,27 +50,48 @@
     </div>
 }
 
-<div class="haikus-container">
+<div class="haikus-container container-fluid">
     @foreach (var haiku in Model.Haikus)
     {
-        <div class="haiku-container-item">
-            @Html.TextAreaFor(modelItem => haiku.Text,  htmlAttributes: new { @disabled = "disabled" })
-            @Html.DisplayFor(modelItem => haiku.Rating)
-            @Html.DisplayFor(modelItem => haiku.Author)
-            @Html.ActionLink("Details", "Details", "Haikus", new { id = haiku.Id }, null)
-           
-            @if (session != null && haiku.Author == session.Nickname)
-            {
-                @Html.ActionLink("Edit", "Edit", "Haikus", new { id = haiku.Id }, null)
+        <div class="haikus-container-item">
+            <div class="first-panel">
+                @Html.TextAreaFor(modelItem => haiku.Text, htmlAttributes: new { @disabled = "disabled" })
+                @Html.ActionLink("Details", "Details", "Haikus", new { id = haiku.Id }, new { @class = "btn btn-primary side-btn" })
 
-                @Html.ActionLink("Delete", "Delete", "Haikus", new { id = haiku.Id }, null)
-            }
+                @if (session != null && haiku.Author == session.Nickname)
+                {
+                    @Html.ActionLink("Edit", "Edit", "Haikus", new { id = haiku.Id }, new { @class = "btn btn-primary side-btn" })
+
+                    @Html.ActionLink("Delete", "Delete", "Haikus", new { id = haiku.Id }, new { @class = "btn btn-danger side-btn" })
+                }
+            </div>
+            <span class="second-panel">
+                @Html.DisplayFor(modelItem => haiku.Author)
+                <span class="text-danger">
+                    <span class="rating-stars">
+                        <span class="rateit" id="rating" data-rateit-value="@haiku.Rating" data-rateit-max="5" data-rateit-step="0.01" data-rateit-resetable="false" data-rateit-readonly="true"></span>
+                    </span>
+                    <span class="rating-numeric">@Html.DisplayFor(modelItem => haiku.Rating)</span>
+                </span>
+            </span>
         </div>
 
-        <br />
+        <div class="divider"></div>
     }
 </div>
 
 Page @Model.Haikus.PageNumber of @Model.Haikus.PageCount
 @Html.PagedListPager(Model.Haikus, page => Url.Action("Index",
     new { SortBy = Model.QueryParams.SortBy, Order = Model.QueryParams.Order, Skip = (page - 1) * Model.QueryParams.Take, Take = Model.QueryParams.Take }))
+
+@section scripts
+{
+    @Scripts.Render("~/Scripts/bootstrap-select.min.js")
+    <script>
+        $(document).ready(function () {
+            $('.selectpicker').selectpicker();
+        });
+    </script>
+    @Scripts.Render("~/Scripts/jquery.rateit.min.js")
+    @Scripts.Render("~/Scripts/rating.js") 
+}
