@@ -3,6 +3,7 @@
 @section styles {
     @Styles.Render("~/Content/rateit.css")
     @Styles.Render("~/Content/bigstars.css")
+    @Styles.Render("~/Content/expanding-textarea.min.css")
 }
 
 @{
@@ -28,7 +29,15 @@
 
 @Html.HiddenFor(model => model.Id, new { @id = "haikuId" } )
 
-@Html.TextAreaFor(model => model.Text)
+<form>
+    <div class="form-horizontal">
+        <div class="form-group">
+            <div class="col-md-10">
+                @Html.TextAreaFor(model => model.Text, new { @id = "expanding-textarea", @disabled = "disabled" })
+            </div>
+        </div>
+    </div>
+</form>
 
 @if (session != null && session.Nickname != Model.Author)
 {
