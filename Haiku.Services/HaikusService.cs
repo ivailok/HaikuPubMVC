@@ -181,7 +181,7 @@ namespace Haiku.Services
             var query = this.UnitOfWork.HaikusRepository
                 .QueryInclude(h => h.User)
                 .Where(h => h.User.Nickname == nickname)
-                .OrderBy(h => h.DatePublished)
+                .OrderByDescending(h => h.DatePublished)
                 .Skip(queryParams.Skip)
                 .Take(queryParams.Take);
 

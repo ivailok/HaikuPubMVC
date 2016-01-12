@@ -2,6 +2,12 @@
 @using PagedList.Mvc;
 <link href="~/Content/PagedList.css" rel="stylesheet" type="text/css" />
 
+@section styles {
+    @Styles.Render("~/Content/PagedList.css")
+    @Styles.Render("~/Content/rateit.css")
+    @Styles.Render("~/Content/haikus.min.css")
+}
+
 @{
     ViewBag.Title = "Haikus";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -9,21 +15,36 @@
 
 <br />
 
-<div class="haikus-container">
+<div class="haikus-container container-fluid">
     @foreach (var haiku in Model.Haikus)
     {
-        <div class="haiku-container-item">
-            @Html.TextAreaFor(modelItem => haiku.Text, htmlAttributes: new { @disabled = "disabled" })
-            @Html.DisplayFor(modelItem => haiku.Rating)
-            @Html.ActionLink("Details", "Details", "Haikus", new { id = haiku.Id }, null)
-            @Html.ActionLink("Edit", "Edit", "Haikus", new { id = haiku.Id }, null)
-            @Html.ActionLink("Delete", "Delete", "Haikus", new { id = haiku.Id }, null)
+        <div class="haikus-container-item">
+            <div class="first-panel">
+                @Html.TextAreaFor(modelItem => haiku.Text, htmlAttributes: new { @disabled = "disabled" })
+                @Html.ActionLink("Details", "Details", "Haikus", new { id = haiku.Id }, new { @class = "btn btn-primary side-btn" })
+                @Html.ActionLink("Edit", "Edit", "Haikus", new { id = haiku.Id }, new { @class = "btn btn-primary side-btn" })
+                @Html.ActionLink("Delete", "Delete", "Haikus", new { id = haiku.Id }, new { @class = "btn btn-danger side-btn" })
+            </div>
+            <span class="second-panel">
+                @Html.DisplayFor(modelItem => haiku.Author)
+                <span class="text-danger">
+                    <span class="rating-stars">
+                        <span class="rateit" id="rating" data-rateit-value="@haiku.Rating" data-rateit-max="5" data-rateit-step="0.01" data-rateit-resetable="false" data-rateit-readonly="true"></span>
+                    </span>
+                    <span class="rating-numeric">@Html.DisplayFor(modelItem => haiku.Rating)</span>
+                </span>
+            </span>
         </div>
 
-        <br />
+        <div class="divider"></div>
     }
 </div>
 
 Page @Model.Haikus.PageNumber of @Model.Haikus.PageCount
 @Html.PagedListPager(Model.Haikus, page => Url.Action("Details",
     new { Skip = (page - 1) * Model.QueryParams.Take, Take = Model.QueryParams.Take }))
+
+@section scripts {
+    @Scripts.Render("~/Scripts/jquery.rateit.min.js")
+    @Scripts.Render("~/Scripts/rating.js")
+}
