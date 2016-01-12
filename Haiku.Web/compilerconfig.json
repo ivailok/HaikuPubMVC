@@ -2,5 +2,9 @@
   {
     "outputFile": "Content/haikus.css",
     "inputFile": "Content/haikus.less"
+  },
+  {
+    "outputFile": "Content/expanding-textarea.css",
+    "inputFile": "Content/expanding-textarea.less"
   }
 ]

@@ -21,9 +21,9 @@
         <div class="haikus-container-item">
             <div class="first-panel">
                 @Html.TextAreaFor(modelItem => haiku.Text, htmlAttributes: new { @disabled = "disabled" })
-                @Html.ActionLink("Details", "Details", "Haikus", new { id = haiku.Id }, new { @class = "btn btn-primary side-btn" })
-                @Html.ActionLink("Edit", "Edit", "Haikus", new { id = haiku.Id }, new { @class = "btn btn-primary side-btn" })
                 @Html.ActionLink("Delete", "Delete", "Haikus", new { id = haiku.Id }, new { @class = "btn btn-danger side-btn" })
+                @Html.ActionLink("Edit", "Edit", "Haikus", new { id = haiku.Id }, new { @class = "btn btn-primary side-btn" })
+                @Html.ActionLink("Details", "Details", "Haikus", new { id = haiku.Id }, new { @class = "btn btn-primary side-btn" })
             </div>
             <span class="second-panel">
                 @Html.DisplayFor(modelItem => haiku.Author)
