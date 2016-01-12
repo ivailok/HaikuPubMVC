@@ -1,8 +1,33 @@
 ﻿
 @{
-    ViewBag.Title = "Index";
+    ViewBag.Title = "HaikuPub";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Index</h2>
+@section styles {
+    @Styles.Render("~/Content/home.min.css")    
+}
 
+<div class="divider"></div>
+
+<div class="home-left-row">
+    <img src="~/Content/home-image-1.jpg" />
+    <div class="quote">
+        <h4 class="quote-body">
+            <i>"And what, you ask, does writing teach us? First and foremost, it reminds us that we are alive and that it is a gift and a privilige, not a right."</i>
+        </h4>
+        <p class="quote-author">Ray Bradbury</p>
+    </div>
+</div>
+
+<div class="divider"></div>
+
+<div class="home-right-row">
+    <img src="~/Content/home-image-2.jpg" />
+    <div class="quote">
+        <h4 class="quote-body">
+            <i>"Hard writing makes easy reading. Easy writing makes hard reading."</i>
+        </h4>
+        <p class="quote-author">Bill Wheeler</p>
+    </div>
+</div>

@@ -177,6 +177,13 @@
       <DependentUpon>haikus.css</DependentUpon>
     </Content>
     <Content Include="Content\home-image-1.jpg" />
+    <Content Include="Content\home-image-2.jpg" />
+    <Content Include="Content\home.css">
+      <DependentUpon>home.less</DependentUpon>
+    </Content>
+    <Content Include="Content\home.min.css">
+      <DependentUpon>home.css</DependentUpon>
+    </Content>
     <Content Include="Content\PagedList.css" />
     <Content Include="Content\rateit.css" />
     <Content Include="Content\star.gif" />
@@ -197,6 +204,7 @@
       <DependentUpon>compilerconfig.json</DependentUpon>
     </None>
     <Content Include="Content\expanding-textarea.less" />
+    <Content Include="Content\home.less" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\hashing.js" />
     <Content Include="Scripts\i18n\defaults-ar_AR.js" />

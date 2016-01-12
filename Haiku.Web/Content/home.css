@@ -1,0 +1,16 @@
+﻿.home-left-row img {
+  float: left;
+}
+.home-left-row .quote {
+  overflow: hidden;
+  padding-left: 25px;
+}
+.home-right-row img {
+  float: right;
+}
+.home-right-row .quote {
+  overflow: hidden;
+}
+.divider {
+  height: 100px;
+}
