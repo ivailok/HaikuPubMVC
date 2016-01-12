@@ -46,6 +46,10 @@
     <span id="ratingHover"></span>
 }
 
+<div>
+    @Html.ActionLink("Back", "Index", "Haikus", new { area = "", SortBy = "Date", Order = "Descending", Skip = 0, Take = 20 }, new { @class = "btn btn-warning" })
+</div>
+
 @section scripts {
     @Scripts.Render("~/Scripts/jquery.rateit.min.js")
     @Scripts.Render("~/Scripts/rating.js")  

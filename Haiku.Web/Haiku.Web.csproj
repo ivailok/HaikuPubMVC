@@ -176,6 +176,7 @@
     <Content Include="Content\haikus.min.css">
       <DependentUpon>haikus.css</DependentUpon>
     </Content>
+    <Content Include="Content\home-image-1.jpg" />
     <Content Include="Content\PagedList.css" />
     <Content Include="Content\rateit.css" />
     <Content Include="Content\star.gif" />

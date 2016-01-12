@@ -68,10 +68,11 @@
             <span class="second-panel">
                 @Html.DisplayFor(modelItem => haiku.Author)
                 <span class="text-danger">
+                    @{var rating = string.Format(System.Globalization.CultureInfo.GetCultureInfo("en-US"), "{0:0.00}", haiku.Rating); }
                     <span class="rating-stars">
-                        <span class="rateit" id="rating" data-rateit-value="@haiku.Rating" data-rateit-max="5" data-rateit-step="0.01" data-rateit-resetable="false" data-rateit-readonly="true"></span>
+                        <span class="rateit" id="rating" data-rateit-value="@rating" data-rateit-max="5" data-rateit-step="0.01" data-rateit-resetable="false" data-rateit-readonly="true"></span>
                     </span>
-                    <span class="rating-numeric">@Html.DisplayFor(modelItem => haiku.Rating)</span>
+                    <span class="rating-numeric">@Html.DisplayFor(modelItem => rating)</span>
                 </span>
             </span>
         </div>
@@ -80,7 +81,10 @@
     }
 </div>
 
-Page @Model.Haikus.PageNumber of @Model.Haikus.PageCount
+@if (Model.Haikus.PageCount != 0)
+{
+    @:Page @Model.Haikus.PageNumber of @Model.Haikus.PageCount
+}
 @Html.PagedListPager(Model.Haikus, page => Url.Action("Index",
     new { SortBy = Model.QueryParams.SortBy, Order = Model.QueryParams.Order, Skip = (page - 1) * Model.QueryParams.Take, Take = Model.QueryParams.Take }))
 
